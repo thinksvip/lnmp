@@ -1,0 +1,12 @@
+/data
+/logs/nginx
+/logs/redis
+/logs/php-fpm
+/logs/mysql
+/conf/nginx/conf.d
+!/conf/nginx/conf.d/site1.conf
+!/conf/nginx/conf.d/site2.conf
+!/conf/nginx/conf.d/upstream.conf
+!/conf/nginx/conf.d/certs
+.env
+/.idea

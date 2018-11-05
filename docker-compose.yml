@@ -1,0 +1,167 @@
+version: '3'
+# 定义四个服务nginx,php,mysql,redis
+services:
+  nginx:
+    # 依赖php服务，意味着在启动nginx之前先启动php
+    depends_on:
+      - php
+    # nginx镜像的路径
+    build:
+      context: ./nginx
+      args:
+        - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
+        - TIME_ZONE=${TIME_ZONE}
+    # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${NGINX_HOST_CONF_PATH}conf.d/:/etc/nginx/conf.d/:ro,cached
+      - ${NGINX_HOST_CONF_PATH}nginx.conf:/etc/nginx/nginx.conf:ro,cached
+      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx/:rw,cached
+    # 映射80和443端口
+    ports:
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
+    networks:
+      frontend:
+    # nginx意外退出时自动重启
+    restart: always
+    # 容器名称
+    container_name: nginx
+
+  #PHP  
+  php:
+    depends_on:
+      - mysql
+      - redis
+    build:
+      context: ./php
+      args:
+        - PHP_FPM_VERSION=${PHP_FPM_VERSION}
+        - REDIS_VERSION=${PHP_FPM_REDIS_VERSION}
+        - XDEBUG_VERSION=${PHP_FPM_XDEBUG_VERSION}
+        - IMAGICK_VERSION=${PHP_FPM_IMAGICK_VERSION}
+        - MEMCACHED_VERSION=${PHP_FPM_MEMCACHED_VERSION}
+        - OPEN_UNIXSOCKE=${PHP_FPM_OPEN_UNIXSOCKE}
+        - INSTALL_INTL=${PHP_FPM_INSTALL_INTL}
+        - INSTALL_SOAP=${PHP_FPM_INSTALL_SOAP}
+        - INSTALL_XSL=${PHP_FPM_INSTALL_XSL}
+        - INSTALL_XMLRPC=${PHP_FPM_INSTALL_XMLRPC}
+        - INSTALL_WDDX=${PHP_FPM_INSTALL_WDDX}
+        - INSTALL_BZ2=${PHP_FPM_INSTALL_BZ2}
+        - INSTALL_ZIP=${PHP_FPM_INSTALL_ZIP}
+        - INSTALL_PCNTL=${PHP_FPM_INSTALL_PCNTL}
+        - INSTALL_PDO_MYSQL=${PHP_FPM_INSTALL_PDO_MYSQL}
+        - INSTALL_MYSQLI=${PHP_FPM_INSTALL_MYSQLI}
+        - INSTALL_MBSTRING=${PHP_FPM_INSTALL_MBSTRING}
+        - INSTALL_EXIF=${PHP_FPM_INSTALL_EXIF}
+        - INSTALL_BCMATH=${PHP_FPM_INSTALL_BCMATH}
+        - INSTALL_CALENDAR=${PHP_FPM_INSTALL_CALENDAR}
+        - INSTALL_SOCKETS=${PHP_FPM_INSTALL_SOCKETS}
+        - INSTALL_GETTEXT=${PHP_FPM_INSTALL_GETTEXT}
+        - INSTALL_SHMOP=${PHP_FPM_INSTALL_SHMOP}
+        - INSTALL_SYSVMSG=${PHP_FPM_INSTALL_SYSVMSG}
+        - INSTALL_SYSVSEM=${PHP_FPM_INSTALL_SYSVSEM}
+        - INSTALL_SYSVSHM=${PHP_FPM_INSTALL_SYSVSHM}
+        - INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
+        - INSTALL_PDO_FIREBIRD=${PHP_FPM_INSTALL_PDO_FIREBIRD}
+        - INSTALL_PDO_DBLIB=${PHP_FPM_INSTALL_PDO_DBLIB}
+        - INSTALL_PDO_OCI=${PHP_FPM_INSTALL_PDO_OCI}
+        - INSTALL_PDO_ODBC=${PHP_FPM_INSTALL_PDO_ODBC}
+        - INSTALL_PDO_PGSQL=${PHP_FPM_INSTALL_PDO_PGSQL}
+        - INSTALL_PGSQL=${PHP_FPM_INSTALL_PGSQL}
+        - INSTALL_PG_CLIENT=${PHP_FPM_INSTALL_PG_CLIENT}
+        - INSTALL_OCI8=${PHP_FPM_INSTALL_OCI8}
+        - INSTALL_ODBC=${PHP_FPM_INSTALL_ODBC}
+        - INSTALL_DBA=${PHP_FPM_INSTALL_DBA}
+        - INSTALL_INTERBASE=${PHP_FPM_INSTALL_INTERBASE}
+        - INSTALL_MCRYPT=${PHP_FPM_INSTALL_MCRYPT}
+        - INSTALL_CURL=${PHP_FPM_INSTALL_CURL}
+        - INSTALL_READLINE=${PHP_FPM_INSTALL_READLINE}
+        - INSTALL_SNMP=${PHP_FPM_INSTALL_SNMP}
+        - INSTALL_PSPELL=${PHP_FPM_INSTALL_PSPELL}
+        - INSTALL_RECODE=${PHP_FPM_INSTALL_RECODE}
+        - INSTALL_TIDY=${PHP_FPM_INSTALL_TIDY}
+        - INSTALL_GMP=${PHP_FPM_INSTALL_GMP}
+        - INSTALL_POSTGRESQL_CLIENT=${PHP_FPM_INSTALL_POSTGRESQL_CLIENT}
+        - INSTALL_MYSQL_CLIENT=${PHP_FPM_INSTALL_MYSQL_CLIENT}
+        - INSTALL_IMAP=${PHP_FPM_INSTALL_IMAP}
+        - INSTALL_LDAP=${PHP_FPM_INSTALL_LDAP}
+        - INSTALL_SWOOLE=${PHP_FPM_INSTALL_SWOOLE}
+        - INSTALL_COMPOSER=${PHP_FPM_INSTALL_COMPOSER}
+        - INSTALL_REDIS=${PHP_FPM_INSTALL_REDIS}
+        - INSTALL_XDEBUG=${PHP_FPM_INSTALL_XDEBUG}
+        - INSTALL_IMAGICK=${PHP_FPM_INSTALL_IMAGICK}
+        - INSTALL_MEMCACHED=${PHP_FPM_INSTALL_MEMCACHED}
+        - COMPOSER_PHPCSFIXER=${COMPOSER_PHPCSFIXER}
+        - COMPOSER_CODESNIFFER=${COMPOSER_CODESNIFFER}
+        - COMPOSER_REPO_PACKAGIST=${COMPOSER_REPO_PACKAGIST}
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
+      - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
+    ports:
+      - "${PHP_FRM_PORT}:9000"
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    networks:
+      frontend:
+      backend: 
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    container_name: php
+
+  # MySQL
+  mysql:
+    build:
+      context: ./mysql
+      args:
+        - MYSQL_VERSION=${MYSQL_VERSION}
+        - TIME_ZONE=${TIME_ZONE}
+    volumes:
+      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:rw,cached
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
+      - ${MYSQL_HOST_LOG_PATH}:/var/log/mysql/:rw,cached
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TIME_ZONE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      backend:
+    restart: always
+    container_name: mysql
+
+  # REDIS
+  redis:
+    build:
+      context: ./redis
+      args:
+        - REDIS_VERSION=${REDIS_VERSION}
+        - TIME_ZONE=${TIME_ZONE}
+    volumes:
+      - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
+      - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      backend:        
+    restart: always
+    container_name: redis
+
+#网络
+networks:
+  frontend:
+  backend:
+
+#sock容器
+volumes:
+  local:
+
