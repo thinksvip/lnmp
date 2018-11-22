@@ -6,7 +6,7 @@ services:
     depends_on:
       - php
     # nginx镜像的路径
-    image: registry.cn-shenzhen.aliyuncs.com/yed/yed:nginx-pe
+    image: thinksvip/lnmp:nginx-pe
     # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
@@ -30,7 +30,7 @@ services:
     depends_on:
       - mysql
       - redis
-    image: registry.cn-shenzhen.aliyuncs.com/yed/yed:php7210-dev
+    image: thinksvip/lnmp:php7212-pe
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -52,7 +52,7 @@ services:
 
   # MySQL
   mysql:
-    image: registry.cn-shenzhen.aliyuncs.com/yed/yed:mysql57-pe
+    image: thinksvip/lnmp:mysql57-pe
     volumes:
       - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:rw,cached
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
@@ -72,7 +72,7 @@ services:
 
   # REDIS
   redis:
-    image: registry.cn-shenzhen.aliyuncs.com/yed/yed:redis-pe
+    image: thinksvip/lnmp:redis-pe
     volumes:
       - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
       - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
