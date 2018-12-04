@@ -3,5 +3,4 @@
 /logs/redis
 /logs/php-fpm
 /logs/mysql
-.env
 /.idea
