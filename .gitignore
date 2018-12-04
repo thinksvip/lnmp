@@ -4,3 +4,4 @@
 /logs/php-fpm
 /logs/mysql
 /.idea
+/.env
