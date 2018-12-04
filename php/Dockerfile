@@ -1,4 +1,4 @@
-ARG PHP_FPM_VERSION
+ARG PHP_FPM_VERSION=7.2
 
 FROM php:${PHP_FPM_VERSION}-fpm
 
@@ -8,7 +8,7 @@ ARG	TIME_ZONE
 
 RUN ln -snf /usr/share/zoneinfo/"${TIME_ZONE}" /etc/localtime && echo "${TIME_ZONE}" > /etc/timezone
 
-COPY ./sources.list.stretch /etc/apt/sources.list
+#COPY ./sources.list.stretch /etc/apt/sources.list
 
 ARG REDIS_VERSION
 ARG XDEBUG_VERSION
