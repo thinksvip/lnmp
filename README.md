@@ -154,7 +154,7 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
 因为composer依赖于PHP，所以，是必须在容器里面操作composer的。
 
 ## 7. 使用opcache
-**注意**opcache配置默认不查询 **更改** 如发布新版本需重启php-fpm
+**注意**opcache已开启,配置默认不查询 **更改** 如发布新版本需重启php-fpm
 ```
     $ docker-compose restart php
 ``` 
