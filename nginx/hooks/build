@@ -3,8 +3,8 @@
 # $IMAGE_NAME var is injected into the build so the tag is correct.
 
 echo "Build hook running"
-docker build --build-arg NGINX_VERSION=`latest` \
-             --build-arg TIME_ZONE=`Asia/Shanghai` \
-             --build-arg NGINX_PHP_UPSTREAM_CONTAINER='unix:/sock/docker.sock' \
-             --build-arg CHANGE_SOURCE='false' \
+docker build --build-arg NGINX_VERSION=latest \
+             --build-arg TIME_ZONE=Asia/Shanghai \
+             --build-arg NGINX_PHP_UPSTREAM_CONTAINER=unix:/sock/docker.sock \
+             --build-arg CHANGE_SOURCE=false \
              -t $IMAGE_NAME .
