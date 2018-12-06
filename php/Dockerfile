@@ -80,7 +80,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # INSTALL_SYSVSHM
     docker-php-ext-install sysvshm && \
 # INSTALL_OPCACHE
-    docker-php-ext-install opcache && \
+    docker-php-ext-install opcache 
 # # INSTALL_PDO_FIREBIRD
 #     docker-php-ext-install pdo_firebird && \
 # # INSTALL_PDO_DBLIB
