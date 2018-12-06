@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# $IMAGE_NAME var is injected into the build so the tag is correct.
-
-echo "Build hook running"
-docker build --build-arg REDIS_VERSION=latest \
-             --build-arg TIME_ZONE=Asia/Shanghai \
-             -t $IMAGE_NAME .

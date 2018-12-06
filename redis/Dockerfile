@@ -1,8 +1,8 @@
-ARG REDIS_VERSION
+ARG REDIS_VERSION=latest
 
 FROM redis:${REDIS_VERSION}
 
-ARG	TIME_ZONE
+ARG	TIME_ZONE=Asia/Shanghai
 
 # Set Timezone
 
