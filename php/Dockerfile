@@ -181,10 +181,10 @@ RUN printf "\n" | pecl install -o -f redis \
 USER root
 RUN apt-get install -y libmagickwand-dev imagemagick && \
     pecl install imagick && \
-    docker-php-ext-enable imagick && \
+    docker-php-ext-enable imagick
 # INSTALL_MEMCACHED
     # Install the php memcached extension
-    apt-get install -y libmemcached-dev zlib1g-dev && \
+RUN apt-get install -y libmemcached-dev zlib1g-dev && \
     if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       pecl install memcached-2.2.true;  \
     else \
