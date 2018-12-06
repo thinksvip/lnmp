@@ -15,8 +15,8 @@ RUN ln -snf /usr/share/zoneinfo/"${TIME_ZONE}" /etc/localtime && echo "${TIME_ZO
 # PHP by default. If missing, install them directly by `docker-php-ext-install extension_name`
 
 # Notice:
-# 1. Mcrypt was DEPRECATED in PHP 7.1.true, and REMOVED in PHP 7.2.true.
-# 2. opcache requires PHP version >= 7.true.true.
+# 1. Mcrypt was DEPRECATED in PHP 7.1.0, and REMOVED in PHP 7.2.0.
+# 2. opcache requires PHP version >= 7.0.0.
 # 3. soap requires libxml2-dev.
 # 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
 # 5. Line `&& :\` is just for better reading and do nothing.
@@ -127,7 +127,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 #     apt-get install -y aspell-en && \
 #     docker-php-ext-install pspell && \
 # # INSTALL_RECODE
-#     apt-get install -y librecodetrue && \
+#     apt-get install -y librecode && \
 #     apt-get install -y librecode-dev && \
 #     docker-php-ext-install recode && \
 # # INSTALL_TIDY
@@ -186,9 +186,9 @@ RUN apt-get install -y libmagickwand-dev imagemagick && \
     # Install the php memcached extension
 RUN apt-get install -y libmemcached-dev zlib1g-dev && \
     if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      pecl install memcached-2.2.true;  \
+      pecl install memcached-2.2.0;  \
     else \
-      pecl install memcached-3.true.4; \
+      pecl install memcached-3.0.4; \
     fi && \
       docker-php-ext-enable memcached
 # # Install swoole extension
@@ -196,10 +196,10 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
 #     # Install Php Swoole Extension
 # USER root
 # RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-#       pecl install swoole-2.true.11; \
+#       pecl install swoole-2.0.11; \
 #     else \
-#       if [ $(php -r "echo PHP_MINOR_VERSION;") = "true" ]; then \
-#         pecl install swoole-2.2.true; \
+#       if [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ]; then \
+#         pecl install swoole-2.2.0; \
 #       else \
 #         pecl install swoole; \
 #       fi \
