@@ -1,0 +1,94 @@
+version: '3'
+# 定义四个服务nginx,php,mysql,redis
+services:
+  nginx:
+    # 依赖php服务，意味着在启动nginx之前先启动php
+    depends_on:
+      - php
+    # nginx镜像的路径
+    image: thinksvip/lnmp:nginx
+    # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${NGINX_HOST_CONF_PATH}conf.d/:/etc/nginx/conf.d/:ro,cached
+      - ${NGINX_HOST_CONF_PATH}nginx.conf:/etc/nginx/nginx.conf:ro,cached
+      - ${NGINX_HOST_LOG_PATH}:/var/log/nginx/:rw,cached
+    # 映射80和443端口
+    ports:
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
+    networks:
+      frontend:
+    # nginx意外退出时自动重启
+    restart: always
+    # 容器名称
+    container_name: nginx
+
+  #PHP  
+  php:
+    depends_on:
+      - mysql
+      - redis
+    image: thinksvip/lnmp:php-dev
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
+      - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
+    ports:
+      - "${PHP_FRM_PORT}:9000"
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    networks:
+      frontend:
+      backend: 
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    container_name: php
+
+  # MySQL
+  mysql:
+    image: thinksvip/lnmp:mysql
+    volumes:
+      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:rw,cached
+      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
+      - ${MYSQL_HOST_LOG_PATH}:/var/log/mysql/:rw,cached
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TIME_ZONE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    networks:
+      backend:
+    restart: always
+    container_name: mysql
+
+  # REDIS
+  redis:
+    image: thinksvip/lnmp:redis
+    volumes:
+      - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
+      - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      backend:        
+    restart: always
+    container_name: redis
+
+#网络
+networks:
+  frontend:
+  backend:
+
+#sock容器
+volumes:
+  local:
+
