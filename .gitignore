@@ -5,3 +5,5 @@
 /logs/mysql
 /.idea
 /.env
+/www
+!/www/site/index.php
