@@ -4,8 +4,6 @@ FROM mysql:${MYSQL_VERSION}
 
 ARG	TIME_ZONE=Asia/Shanghai
 
-# Set Timezone
-
-RUN ln -snf /usr/share/zoneinfo/"${TIME_ZONE}" /etc/localtime && echo "${TIME_ZONE}" > /etc/timezone 
-# give access
-RUN chown -R mysql:mysql /var/log/mysql/
+# Set Timezone  # give access
+USER root
+RUN ln -snf /usr/share/zoneinfo/"${TIME_ZONE}" /etc/localtime && echo "${TIME_ZONE}" > /etc/timezone && chown -R mysql:mysql /var/log/mysql/
