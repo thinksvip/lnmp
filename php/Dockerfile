@@ -171,13 +171,13 @@ RUN printf "\n" | pecl install -o -f redis \
     &&  docker-php-ext-enable redis 
 # INSTALL_XDEBUG
   # Install the xdebug extension
-USER root
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      pecl install xdebug-2.5.5; \
-    else \
-      pecl install xdebug; \
-    fi && \
-    docker-php-ext-enable xdebug 
+# USER root
+# RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+#       pecl install xdebug-2.5.5; \
+#     else \
+#       pecl install xdebug; \
+#     fi && \
+#     docker-php-ext-enable xdebug 
 USER root
 RUN apt-get install -y libmagickwand-dev imagemagick && \
     pecl install imagick && \
@@ -206,12 +206,12 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
 #     fi && \
 #     docker-php-ext-enable swoole
 # COMPOSER_PHPCSFIXER
-USER root
-RUN composer global require friendsofphp/php-cs-fixer && \
-# COMPOSER_CODESNIFFER
-   composer global require "squizlabs/php_codesniffer=*" 
-# Check PHP version:
-RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
+# USER root
+# RUN composer global require friendsofphp/php-cs-fixer && \
+# # COMPOSER_CODESNIFFER
+#    composer global require "squizlabs/php_codesniffer=*" 
+# # Check PHP version:
+# RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 USER root
 
