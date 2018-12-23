@@ -135,12 +135,12 @@ Nginx日志是我们用得最多的日志，所以我们单独放在根目录`lo
 3. 重启PHP-FPM容器。
 
 ### 5.2 MySQL日志
-因为MySQL容器中的MySQL使用的是`mysql`用户启动，它无法自行在`/var/log`下的增加日志文件。所以在创建`mysql`构建镜像`./mysql/Dockerfile`时候，我们将`/var/log/mysql/`文件夹授权为`mysql`用户/组所有。
+因为MySQL容器中的MySQL使用的是`mysql`用户启动，它无法自行在`/var/log`下的增加日志文件。在启动容器组后给`/var/log/mysql/`文件夹更所有者为`mysql`。更改文件夹所有者后重启`mysql`容器。
 ```
-    chown -R mysql:mysql /var/log/mysql/
+    docker exec mysql chown mysql:root /var/log/mysql
+    docker-compose restart mysql
 ```
-以上是mysql.conf中的日志文件的配置。
-
+重启完成后在`./log/mysql/`会生成`mysql-slow.log`日志文件。
 ## 6. 使用composer
 lnmp默认已经在容器中安装了composer，使用时先进入容器：
 ```
@@ -198,7 +198,8 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
 
 2. PHP5.6错误“ibfreetype6-dev : Depends: zlib1g-dev but it is not going to be installed or libz-dev”
     > 请参考： https://github.com/yeszao/dnmp/issues/39
-
+3. `mysql`日志文件授权为何不在`Dockerfile`中使用`RUN` 命令直接授权。因为`Dockerfile`中`VOLUME`指令之后的任何内容都无法对该卷进行更改。我们的镜像是基于官方镜像搭建，官方镜像在构建时使用过`VOLUME`指令。
+   >请参考： https://container-solutions.com/understanding-volumes-docker/
 ## 搭建参考
 1. > https://github.com/yeszao/dnmp
 2. > http://laradock.io/
