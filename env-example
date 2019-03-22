@@ -58,7 +58,7 @@ MYSQL_HOST_LOG_PATH=./log/mysql/
 
 ### PHP_FPM ###############################################
 
-# PHP_FPM_VERSION 5.4 5.6 7.2
+# PHP_FPM_VERSION 5.4 5.6 7.2 7.3
 PHP_FPM_VERSION=7.2
 PHP_FPM_REDIS_VERSION=4.1.1
 PHP_FPM_XDEBUG_VERSION=2.6.1
