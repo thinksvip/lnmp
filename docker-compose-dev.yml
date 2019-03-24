@@ -87,6 +87,23 @@ services:
     restart: always
     container_name: redis
 
+  # NODE
+  node:
+    image: thinksvip/lnmp:node
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node
+    volumes:
+      - ${NODE_PATH_HOST}:/app/laravel-echo-server.json:ro
+    ports:
+      - "${LARAVEL_ECHO_SERVER_PORT}:6001"
+    links:
+      - redis
+      - nginx
+    networks:
+      frontend:
+      backend: 
+    restart: always
+    container_name: node
+
 #网络
 networks:
   frontend:
