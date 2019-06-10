@@ -211,7 +211,7 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
 # # COMPOSER_CODESNIFFER
 #    composer global require "squizlabs/php_codesniffer=*" 
 # # Check PHP version:
-# RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
+RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 USER root
 
