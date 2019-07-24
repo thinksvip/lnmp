@@ -80,7 +80,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # INSTALL_SYSVSHM
     docker-php-ext-install sysvshm && \
 # INSTALL_OPCACHE
-    docker-php-ext-install opcache 
+    docker-php-ext-install opcache && \
 # # INSTALL_PDO_FIREBIRD
 #     docker-php-ext-install pdo_firebird && \
 # # INSTALL_PDO_DBLIB
@@ -133,13 +133,13 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # # INSTALL_TIDY
 #     apt-get install -y libtidy-dev && \
 #     docker-php-ext-install tidy && \
-# # INSTALL_GMP
-#     # Install the GMP extension
-# 	  apt-get install -y libgmp-dev && \
-#       if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-#       ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
-#     ;fi && \
-#     docker-php-ext-install gmp && \
+# INSTALL_GMP
+    # Install the GMP extension
+	apt-get install -y libgmp-dev && \
+    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+      ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
+    ;fi && \
+    docker-php-ext-install gmp
 # # INSTALL_POSTGRESQL_CLIENT
 #     apt-get install -y postgresql-client && \
 # # INSTALL_MYSQL_CLIENT
