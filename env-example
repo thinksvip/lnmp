@@ -75,7 +75,11 @@ REDIS_PORT=6379
 REDIS_HOST_CONF_PATH=./conf/redis/redis.conf
 REDIS_HOST_LOG_PATH=./log/redis/
 
+### REDIS #################################################
 
+NODE_VERSION=alpine
+NODE_PATH_HOST=./node/laravel-echo-server/laravel-echo-server.json
+LARAVEL_ECHO_SERVER_PORT=6001
 
 
 
