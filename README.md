@@ -32,10 +32,15 @@
     │   └── Dockerfile                      mysql镜像构建文件
     ├── nginx                               
     │   └── Dockerfile                      nginx镜像构建文件
+    ├── node                    
+    │   ├── Dockerfile                      node镜像构建文件
+    │   ├── laravel-echo-server
+    │   │   └── laravel-echo-server.json    支持 laravel echo server
+    │   └── package.json
     ├── php
-    │   ├── composer.phar                   composer安装包1.7.2
     │   ├── Dockerfile                      php镜像构建文件
-    │   └── sources.list.stretch            Debian源目录
+    │   └── php-xdebug
+    │       └── Dockerfile                  php镜像构建文件 支持xdebug
     ├── redis
     │   └── Dockerfile                      redis镜像构建文件
     ├── www                                 项目源码目录
@@ -200,6 +205,11 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
     > 请参考： https://github.com/yeszao/dnmp/issues/39
 3. `mysql`日志文件授权为何不在`Dockerfile`中使用`RUN` 命令直接授权。因为`Dockerfile`中`VOLUME`指令之后的任何内容都无法对该卷进行更改。我们的镜像是基于官方镜像搭建，官方镜像在构建时使用过`VOLUME`指令。
    >请参考： https://container-solutions.com/understanding-volumes-docker/
+4. 项目权限问题 
+   >进入php容器 `docker-compose exec php bash`
+
+   >授权 `chown -R www-data:www-data /var/www/html`
+
 ## 搭建参考
 1. > https://github.com/yeszao/dnmp
 2. > http://laradock.io/
