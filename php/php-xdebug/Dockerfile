@@ -155,7 +155,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 #     docker-php-ext-install ldap && \
 # INSTALL_COMPOSER
 USER root
-ARG COMPOSER_REPO_PACKAGIST=https://packagist.phpcomposer.com
+ARG COMPOSER_REPO_PACKAGIST=https://mirrors.aliyun.com/composer/
     # Install composer and add its bin to the PATH.
 RUN curl -s http://getcomposer.org/installer | php && \
     echo 'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> ~/.bashrc && \
