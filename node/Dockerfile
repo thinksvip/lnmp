@@ -1,5 +1,8 @@
 ARG NODE_VERSION=alpine
+
 FROM node:${NODE_VERSION}
+
+LABEL maintainer="Think <think@thinks.fun>"
 
 # Create app directory
 RUN mkdir -p /usr/src/app

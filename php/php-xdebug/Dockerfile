@@ -2,6 +2,8 @@ ARG PHP_FPM_VERSION=7.2
 
 FROM php:${PHP_FPM_VERSION}-fpm
 
+LABEL maintainer="Think <think@thinks.fun>"
+
 # Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
 # tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into
 # PHP by default. If missing, install them directly by `docker-php-ext-install extension_name`
