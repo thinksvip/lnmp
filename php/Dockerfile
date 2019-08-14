@@ -2,14 +2,6 @@ ARG PHP_FPM_VERSION=7.2
 
 FROM php:${PHP_FPM_VERSION}-fpm
 
-ARG	TIME_ZONE=Asia/Shanghai
-
-# Set Timezone
-
-RUN ln -snf /usr/share/zoneinfo/"${TIME_ZONE}" /etc/localtime && echo "${TIME_ZONE}" > /etc/timezone
-
-#COPY ./sources.list.stretch /etc/apt/sources.list
-
 # Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
 # tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into
 # PHP by default. If missing, install them directly by `docker-php-ext-install extension_name`

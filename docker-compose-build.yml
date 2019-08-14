@@ -15,6 +15,8 @@ services:
       - ${NGINX_HOST_CONF_PATH}conf.d/:/etc/nginx/conf.d/:ro,cached
       - ${NGINX_HOST_CONF_PATH}nginx.conf:/etc/nginx/nginx.conf:ro,cached
       - ${NGINX_HOST_LOG_PATH}:/var/log/nginx/:rw,cached
+    environment:
+      - TZ=${TIME_ZONE}
     # 映射80和443端口
     ports:
       - "${NGINX_HOST_HTTP_PORT}:80"
@@ -40,6 +42,8 @@ services:
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
+    environment:
+      - TZ=${TIME_ZONE}
     ports:
       - "${PHP_FRM_PORT}:9000"
     extra_hosts:
@@ -80,6 +84,8 @@ services:
     volumes:
       - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
       - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
+    environment:
+      - TZ=${TIME_ZONE}
     ports:
       - "${REDIS_PORT}:6379"
     networks:
@@ -93,6 +99,8 @@ services:
       context: ./node
     volumes:
       - ${NODE_PATH_HOST}:/app/laravel-echo-server.json:ro
+    environment:
+      - TZ=${TIME_ZONE}
     ports:
       - "${LARAVEL_ECHO_SERVER_PORT}:6001"
     links:
