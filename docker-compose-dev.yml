@@ -82,6 +82,7 @@ services:
     image: thinksvip/lnmp:redis
     # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
     volumes:
+      - ${DATA_PATH_HOST}/redis:/data/:rw,cached
       - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
       - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
     environment:
