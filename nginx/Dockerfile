@@ -6,7 +6,7 @@ LABEL maintainer="Think <think@thinks.fun>"
 
 RUN apt-get update && apt-get -y install logrotate
 
-COPY ./logrotate.d/nginx /etc/logrotate.d/
+COPY ./logrotate.d/nginx-docker /etc/logrotate.d/
 
 # Clean up
 RUN apt-get clean && \
