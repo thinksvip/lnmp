@@ -42,6 +42,8 @@ services:
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
+      - ${SUPERVISOR_HOST_LOG_PATH}:/var/log/supervisor/:rw,cached
+      - ${PHP_FRM_HOST_CONF_PATH}supervisor.d:/etc/supervisor/conf.d/:ro,cached
     environment:
       - TZ=${TIME_ZONE}
     ports:
@@ -61,7 +63,7 @@ services:
     image: thinksvip/lnmp:mysql
     # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:mysql
     volumes:
-      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:rw,cached
+      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:ro,cached
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
       - ${MYSQL_HOST_LOG_PATH}:/var/log/mysql/:rw,cached
     environment:
@@ -83,7 +85,7 @@ services:
     # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
     volumes:
       - ${DATA_PATH_HOST}/redis:/data/:rw,cached
-      - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:rw,cached
+      - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:ro,cached
       - ${REDIS_HOST_LOG_PATH}:/usr/local/redis/redis.log:rw,cached
     environment:
       - TZ=${TIME_ZONE}
