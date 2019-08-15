@@ -5,7 +5,7 @@
         compress
         dateext
         notifempty
-        create 0640 www-data root
+        create 0644 www-data root
         sharedscripts
         postrotate
                 if [ -f /var/run/nginx.pid ]; then
