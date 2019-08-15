@@ -182,7 +182,7 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
     if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       pecl install memcached-2.2.0;  \
     else \
-      pecl install memcached-3.0.4; \
+      pecl install memcached; \
     fi && \
       docker-php-ext-enable memcached
 # # Install swoole extension
