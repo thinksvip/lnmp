@@ -59,7 +59,7 @@ MYSQL_HOST_LOG_PATH=./log/mysql/
 ### PHP_FPM ###############################################
 
 # PHP_FPM_VERSION 5.4 5.6 7.2 7.3
-PHP_FPM_VERSION=7.2
+PHP_FPM_VERSION=7.3
 PHP_FRM_PORT=9000
 PHP_FRM_HOST_LOG_PATH=./log/php-fpm/
 PHP_FRM_HOST_CONF_PATH=./conf/php/
