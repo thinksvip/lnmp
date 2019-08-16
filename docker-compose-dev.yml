@@ -42,8 +42,6 @@ services:
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
-      - ${SUPERVISOR_HOST_LOG_PATH}:/var/log/supervisor/:rw,cached
-      - ${PHP_FRM_HOST_CONF_PATH}supervisor.d:/etc/supervisor/conf.d/:ro,cached
     environment:
       - TZ=${TIME_ZONE}
     ports:

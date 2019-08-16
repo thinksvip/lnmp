@@ -63,7 +63,6 @@ PHP_FPM_VERSION=7.3
 PHP_FRM_PORT=9000
 PHP_FRM_HOST_LOG_PATH=./log/php-fpm/
 PHP_FRM_HOST_CONF_PATH=./conf/php/
-SUPERVISOR_HOST_LOG_PATH=./log/supervisord/
 
 ### REDIS #################################################
 
