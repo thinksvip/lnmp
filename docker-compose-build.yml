@@ -56,6 +56,25 @@ services:
       - SYS_PTRACE
     container_name: php
 
+  # Queue
+  queue:
+    depends_on:
+      - php
+    build:
+      context: ./php/php-queue
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
+    environment:
+      - TZ=${TIME_ZONE}
+    container_name: queue
+    command: php ${APP_CODE_PATH}/artisan queue:work --sleep=3 --tries=3
+    restart: always
+    networks:
+      backend: 
+
   # MySQL
   mysql:
     build:
