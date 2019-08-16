@@ -15,7 +15,7 @@ LABEL maintainer="Think <think@thinks.fun>"
 # 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
 # 5. Line `&& :\` is just for better reading and do nothing.
 RUN apt-get update \
-    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev  libxslt-dev supervisor \
+    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev  libxslt-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install gd 
 # INSTALL_INTL
@@ -215,5 +215,3 @@ RUN apt-get clean && \
     rm /var/log/lastlog /var/log/faillog
 
 RUN chown -R www-data:www-data /var/www/html
-
-ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisor/supervisord.conf"]
