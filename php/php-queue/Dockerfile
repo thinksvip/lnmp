@@ -11,7 +11,8 @@ RUN apk --update add build-base \
   zlib-dev \
   autoconf \
   cyrus-sasl-dev \
-  libgsasl-dev 
+  libgsasl-dev \
+  shadow
 
 
 RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql tokenizer xml pcntl
@@ -19,6 +20,6 @@ RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql tokenizer xml pcntl
 RUN pecl channel-update pecl.php.net && pecl install memcached redis && docker-php-ext-enable memcached redis
 
 RUN rm /var/cache/apk/* \
-    && mkdir -p /var/www
+    && usermod -u 1000 www-data
 
 WORKDIR /var/www/html/
