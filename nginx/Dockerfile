@@ -12,10 +12,6 @@ COPY ./logrotate.d/nginx /etc/logrotate.d/
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm /var/log/lastlog /var/log/faillog
-    
-RUN set -x ; \
-    addgroup -g 82 -S www-data ; \
-    adduser -u 82 -D -S -G www-data www-data && exit 0 ; exit 1
 
 CMD service cron start && nginx -g 'daemon off;'
 
