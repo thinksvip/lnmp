@@ -215,3 +215,5 @@ RUN apt-get clean && \
     rm /var/log/lastlog /var/log/faillog
 
 RUN usermod -u 1000 www-data
+
+USER www-data

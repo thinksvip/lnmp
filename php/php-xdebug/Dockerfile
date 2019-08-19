@@ -216,3 +216,4 @@ RUN apt-get clean && \
 
 RUN usermod -u 1000 www-data
 
+USER www-data
