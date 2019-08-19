@@ -216,8 +216,3 @@ RUN apt-get clean && \
 
 RUN usermod -u 1000 www-data
 
-WORKDIR /var/www/html/
-
-CMD ["php-fpm"]
-
-EXPOSE 9000
