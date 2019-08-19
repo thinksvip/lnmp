@@ -13,7 +13,7 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm /var/log/lastlog /var/log/faillog
 
-CMD [ "/bin/sh","-c","service cron start && nginx -g 'daemon off;'" ]
+CMD "service cron start && nginx -g 'daemon off;'"
 
 # Set upstream conf and remove the default conf
 # ARG PHP_UPSTREAM_CONTAINER=unix:/sock/docker.sock
