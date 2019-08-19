@@ -214,4 +214,4 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm /var/log/lastlog /var/log/faillog
 
-RUN chown -R www-data:www-data /var/www/html
+RUN usermod -u 1000 www-data
