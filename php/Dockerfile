@@ -145,10 +145,11 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-    apk add --no-cache file-dev .phpize-deps imagemagick-dev && \
+    apk add --no-cache autoconf g++ make &&\
+    apk add --no-cache file-dev imagemagick-dev && \
     printf "\n" | pecl install imagick && \
     docker-php-ext-enable imagick && \
-    apk del .phpize-deps
+    apk del autoconf g++ make
 # INSTALL_COMPOSER
 ARG COMPOSER_REPO_PACKAGIST=https://mirrors.aliyun.com/composer/
     # Install composer and add its bin to the PATH.
