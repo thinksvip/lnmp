@@ -82,7 +82,7 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # INSTALL_SYSVSHM
     docker-php-ext-install sysvshm && \
 # INSTALL_OPCACHE
-    docker-php-ext-install opcache 
+    docker-php-ext-install opcache && \
 # # INSTALL_PDO_FIREBIRD
 #     docker-php-ext-install pdo_firebird && \
 # # INSTALL_PDO_DBLIB
@@ -145,7 +145,7 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-RUN apk add --no-cache file-dev && \
+    apk add --no-cache file-dev && \
     apk add --no-cache imagemagick-dev && \
     printf "\n" | pecl install imagick && \
     docker-php-ext-enable imagick
