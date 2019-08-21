@@ -145,10 +145,10 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-    apk add --no-cache file-dev && \
-    apk add --no-cache imagemagick-dev && \
+    apk add --no-cache file-dev .phpize-deps imagemagick-dev && \
     printf "\n" | pecl install imagick && \
-    docker-php-ext-enable imagick
+    docker-php-ext-enable imagick && \
+    apk del .phpize-deps
 # INSTALL_COMPOSER
 ARG COMPOSER_REPO_PACKAGIST=https://mirrors.aliyun.com/composer/
     # Install composer and add its bin to the PATH.
@@ -161,10 +161,11 @@ RUN curl -s http://getcomposer.org/installer | php && \
 # INSTALL_REDIS
     # Install Php Redis Extension
 RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS && \
-    pecl install -o -f redis  && \
+    printf "\n" | pecl install -o -f redis  && \
     docker-php-ext-enable redis && \
     rm -rf /usr/share/php && \
-    rm -rf /tmp/* 
+    rm -rf /tmp/*  && \
+    apk del .phpize-deps
 # INSTALL_XDEBUG
 #  #Install the xdebug extension
 # RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
