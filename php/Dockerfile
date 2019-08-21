@@ -21,7 +21,10 @@ RUN apk --update add \
   libevent-dev \
   libmcrypt-dev \
   libxml2-dev \
-  pcre-dev 
+  pcre-dev \
+  g++ \
+  autoconf \
+  make
 
 # INSTALL_GD
 RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
@@ -145,11 +148,9 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-    apk add --no-cache autoconf g++ make &&\
     apk add --no-cache file-dev imagemagick-dev && \
     printf "\n" | pecl install imagick && \
     docker-php-ext-enable imagick && \
-    apk del autoconf g++ make
 # INSTALL_COMPOSER
 ARG COMPOSER_REPO_PACKAGIST=https://mirrors.aliyun.com/composer/
     # Install composer and add its bin to the PATH.
@@ -209,6 +210,6 @@ RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 
 # Clean up
-RUN rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ makerm && -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
