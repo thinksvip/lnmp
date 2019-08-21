@@ -24,7 +24,8 @@ RUN apk --update add \
   pcre-dev \
   g++ \
   autoconf \
-  make
+  make \
+  shadow
 
 # INSTALL_GD
 RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
