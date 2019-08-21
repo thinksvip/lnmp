@@ -1,4 +1,5 @@
 ARG PHP_FPM_VERSION=7.3
+ARG TIME_ZONE=Asia/Shanghai
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
@@ -14,6 +15,11 @@ LABEL maintainer="Think <think@thinks.fun>"
 # 3. soap requires libxml2-dev.
 # 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
 # 5. Line `&& :\` is just for better reading and do nothing.
+
+# Set Timezone
+RUN apk --no-cache add tzdata \
+    && cp "/usr/share/zoneinfo/${TIME_ZONE}" /etc/localtime \
+    && echo "${TIME_ZONE}" > /etc/timezone
 
 # Install general dependencies
 RUN apk --update add \
