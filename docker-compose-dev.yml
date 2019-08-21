@@ -33,8 +33,8 @@ services:
     depends_on:
       - mysql
       - redis
-    image: thinksvip/lnmp:php-dev
-    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-dev
+    image: thinksvip/lnmp:php-alpine-dev
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine-dev
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
