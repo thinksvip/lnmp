@@ -207,9 +207,7 @@ RUN composer global require friendsofphp/php-cs-fixer && \
     composer global require "squizlabs/php_codesniffer=*" 
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
-
-
-
+USER root
 # Clean up
 RUN apk del autoconf g++ make && rm -rf /tmp/* /var/cache/apk/*
 
