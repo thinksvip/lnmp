@@ -1,5 +1,4 @@
 ARG PHP_FPM_VERSION=7.3
-ARG TIME_ZONE=Asia/Shanghai
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
@@ -17,9 +16,12 @@ LABEL maintainer="Think <think@thinks.fun>"
 # 5. Line `&& :\` is just for better reading and do nothing.
 
 # Set Timezone
-RUN apk --no-cache add tzdata \
-    && cp "/usr/share/zoneinfo/${TIME_ZONE}" /etc/localtime \
-    && echo "${TIME_ZONE}" > /etc/timezone
+# https://wiki.alpinelinux.org/wiki/Setting_the_timezone
+ARG TIME_ZONE=Asia/Shanghai
+RUN apk --no-cache add tzdata && \
+    cp "/usr/share/zoneinfo/${TIME_ZONE}" /etc/localtime && \
+    echo "${TIME_ZONE}" > /etc/timezone && \
+    apk del tzdata
 
 # Install general dependencies
 RUN apk --update add \
