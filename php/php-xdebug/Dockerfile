@@ -200,7 +200,7 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 #     fi && \
 #     docker-php-ext-enable swoole
 # COMPOSER_PHPCSFIXER
-# 
+USER www-data
 RUN composer global require friendsofphp/php-cs-fixer && \
 # COMPOSER_CODESNIFFER
     composer global require "squizlabs/php_codesniffer=*" 
@@ -210,6 +210,6 @@ RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 
 # Clean up
-RUN apk del autoconf g++ makerm && -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ makerm && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
