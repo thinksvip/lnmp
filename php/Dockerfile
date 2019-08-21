@@ -1,6 +1,6 @@
 ARG PHP_FPM_VERSION=7.3
 
-FROM php:${PHP_FPM_VERSION}-fpm
+FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
 
@@ -14,32 +14,39 @@ LABEL maintainer="Think <think@thinks.fun>"
 # 3. soap requires libxml2-dev.
 # 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
 # 5. Line `&& :\` is just for better reading and do nothing.
-RUN apt-get update \
-    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev  libxslt-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd 
-# INSTALL_INTL
 
+# Install general dependencies
+RUN apk --update add \
+  curl \
+  libevent-dev \
+  libmcrypt-dev \
+  libxml2-dev \
+  pcre-dev 
+
+# INSTALL_GD
+RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-install gd && \
+# INSTALL_INTL
     # Install intl and requirements
-USER root
-RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
-    docker-php-ext-configure intl && \
+    apk add --no-cache icu-dev && \
     docker-php-ext-install intl && \
     # Install the soap extension
-    rm /etc/apt/preferences.d/no-debian-php && \
-    apt-get -y install libxml2-dev php-soap && \
     docker-php-ext-install soap && \
 # INSTALL_XSL
+	apk add --no-cache libxslt-dev && \
     docker-php-ext-install xsl && \
 # INSTALL_XMLRPC
+	apk add --no-cache libxslt-dev && \
     docker-php-ext-install xmlrpc && \
 # INSTALL_WDDX
+	apk add --no-cache libxslt-dev && \
     docker-php-ext-install wddx && \
 # INSTALL_BZ2
-    apt-get install -y libbz2-dev && \
+    apk add --no-cache bzip2-dev && \
     docker-php-ext-install bz2 && \
 # INSTALL_ZIP
-    apt-get install libzip-dev -y && \
+    apk --update add libzip-dev && \
     docker-php-ext-configure zip --with-libzip && \
     # Install the zip extension
     docker-php-ext-install zip && \
@@ -64,6 +71,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # INSTALL_SOCKETS
     docker-php-ext-install sockets && \
 # INSTALL_GETTEXT
+    apk add --no-cache gettext-dev && \
     docker-php-ext-install gettext && \
 # INSTALL_SHMOP
     docker-php-ext-install shmop && \
@@ -74,7 +82,7 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # INSTALL_SYSVSHM
     docker-php-ext-install sysvshm && \
 # INSTALL_OPCACHE
-    docker-php-ext-install opcache && \
+    docker-php-ext-install opcache 
 # # INSTALL_PDO_FIREBIRD
 #     docker-php-ext-install pdo_firebird && \
 # # INSTALL_PDO_DBLIB
@@ -84,15 +92,12 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # # INSTALL_PDO_ODBC
 #     docker-php-ext-install pdo_odbc && \
 # # INSTALL_PDO_PGSQL
+#     apk --no-cache add postgresql-dev && \
 #     docker-php-ext-install pdo_pgsql && \
 # # INSTALL_PGSQL
 #     # Install the pgsql extension
+#     apk --no-cache add postgresql-dev && \
 #     docker-php-ext-install pgsql && \
-#     # Create folders if not exists (https://github.com/tianon/docker-brew-debian/issues/65)
-#     mkdir -p /usr/share/man/man1 && \
-#     mkdir -p /usr/share/man/man7 && \
-#     # Install the pgsql client
-#     apt-get install -y postgresql-client && \
 # # INSTALL_OCI8
 #     docker-php-ext-install oci8 && \
 # # INSTALL_ODBC
@@ -100,55 +105,51 @@ RUN apt-get install -y zlib1g-dev libicu-dev g++ && \
 # # INSTALL_DBA
 #     docker-php-ext-install dba && \
 # # INSTALL_INTERBASE
-#     docker-php-ext-install interbase && \
+#     echo "Alpine linux do not support interbase/firebird!!!"
 # # INSTALL_MCRYPT
-#     apt-get install -y libmcrypt-dev && \
+#     apk add --no-cache libmcrypt-dev && \
 #     docker-php-ext-install mcrypt && \
 # # INSTALL_CURL
-#     apt-get install -y curl && \
-#     apt-get install -y libcurl3 && \
-#     apt-get install -y libcurl4-openssl-dev && \
 #     docker-php-ext-install curl && \
 # # INSTALL_READLINE
-#     apt-get install -y libreadline-dev && \
+# 	  apk add --no-cache readline-dev
+# 	  apk add --no-cache libedit-dev
 #     docker-php-ext-install readline && \
 # # INSTALL_SNMP
-#     apt-get install -y libsnmp-dev && \
-#     apt-get install -y snmp && \
+#     apk add --no-cache net-snmp-dev && \
 #     docker-php-ext-install snmp && \
 # # INSTALL_PSPELL
-#     apt-get install -y libpspell-dev && \
-#     apt-get install -y aspell-en && \
+#     apk add --no-cache aspell-dev && \
+#     apk add --no-cache aspell-en && \
 #     docker-php-ext-install pspell && \
 # # INSTALL_RECODE
-#     apt-get install -y librecode && \
-#     apt-get install -y librecode-dev && \
+#     apk add --no-cache recode-dev && \
 #     docker-php-ext-install recode && \
 # # INSTALL_TIDY
-#     apt-get install -y libtidy-dev && \
+#     apk add --no-cache 'tidyhtml-dev==5.2.0-r1' && \
 #     docker-php-ext-install tidy && \
-# INSTALL_GMP
-    # Install the GMP extension
-	apt-get install -y libgmp-dev && \
-    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h \
-    ;fi && \
-    docker-php-ext-install gmp
+# # INSTALL_GMP
+#     # Install the GMP extension
+#     apk add --no-cache gmp-dev && \
+#     docker-php-ext-install gmp && \
 # # INSTALL_POSTGRESQL_CLIENT
-#     apt-get install -y postgresql-client && \
+#     apk add --no-cache postgresql-client && \
 # # INSTALL_MYSQL_CLIENT
-#     apt-get install -y mysql-client && \
+#     apk add --no-cache mysql-client && \
 # # INSTALL_IMAP
-#     apt-get install -y libc-client-dev libkrb5-dev && \
-#     rm -r /var/lib/apt/lists/* && \
-#     docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
+# 	  apk add --no-cache imap-dev && \
+#     docker-php-ext-configure imap --with-imap --with-imap-ssl && \
 #     docker-php-ext-install imap && \
 # # INSTALL_LDAP
-#     apt-get install -y libldap2-dev && \
-#     docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
-#     docker-php-ext-install ldap && \
+# 	  apk add --no-cache ldb-dev && \
+# 	  apk add --no-cache openldap-dev && \
+#     docker-php-ext-install ldap && \ 
+# INSTALL_IMAGICK
+RUN apk add --no-cache file-dev && \
+    apk add --no-cache imagemagick-dev && \
+    printf "\n" | pecl install imagick && \
+    docker-php-ext-enable imagick
 # INSTALL_COMPOSER
-USER root
 ARG COMPOSER_REPO_PACKAGIST=https://mirrors.aliyun.com/composer/
     # Install composer and add its bin to the PATH.
 RUN curl -s http://getcomposer.org/installer | php && \
@@ -159,26 +160,22 @@ RUN curl -s http://getcomposer.org/installer | php && \
     composer config -g repo.packagist composer ${COMPOSER_REPO_PACKAGIST} 
 # INSTALL_REDIS
     # Install Php Redis Extension
-USER root
-RUN printf "\n" | pecl install -o -f redis \
-    &&  rm -rf /tmp/pear \
-    &&  docker-php-ext-enable redis 
+RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS && \
+    pecl install -o -f redis  && \
+    docker-php-ext-enable redis && \
+    rm -rf /usr/share/php && \
+    rm -rf /tmp/* 
 # INSTALL_XDEBUG
-  # Install the xdebug extension
-# USER root
+#  #Install the xdebug extension
 # RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
 #       pecl install xdebug-2.5.5; \
 #     else \
 #       pecl install xdebug; \
 #     fi && \
 #     docker-php-ext-enable xdebug 
-USER root
-RUN apt-get install -y libmagickwand-dev imagemagick && \
-    pecl install imagick && \
-    docker-php-ext-enable imagick
 # INSTALL_MEMCACHED
     # Install the php memcached extension
-RUN apt-get install -y libmemcached-dev zlib1g-dev && \
+RUN apk add --no-cache libmemcached-dev zlib-dev && \
     if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       pecl install memcached-2.2.0;  \
     else \
@@ -188,7 +185,7 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
 # # Install swoole extension
 # # swoole require PHP version 5.5 or later.
 #     # Install Php Swoole Extension
-# USER root
+# 
 # RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
 #       pecl install swoole-2.0.11; \
 #     else \
@@ -200,18 +197,16 @@ RUN apt-get install -y libmemcached-dev zlib1g-dev && \
 #     fi && \
 #     docker-php-ext-enable swoole
 # COMPOSER_PHPCSFIXER
-# USER root
+# 
 # RUN composer global require friendsofphp/php-cs-fixer && \
 # # COMPOSER_CODESNIFFER
-#    composer global require "squizlabs/php_codesniffer=*" 
+#     composer global require "squizlabs/php_codesniffer=*" 
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
-USER root
+
 
 # Clean up
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
+RUN rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
