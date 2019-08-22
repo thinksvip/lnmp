@@ -42,8 +42,6 @@ services:
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
-    environment:
-      - TZ=${TIME_ZONE}
     ports:
       - "${PHP_FRM_PORT}:9000"
     extra_hosts:
@@ -67,8 +65,6 @@ services:
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
       - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
-    environment:
-      - TZ=${TIME_ZONE}
     container_name: queue
     command: php ${APP_CODE_PATH}/artisan queue:work --sleep=3 --tries=3
     restart: always
@@ -115,12 +111,12 @@ services:
 
   # NODE
   node:
+    depends_on:
+      - php
     # image: thinksvip/lnmp:node
     image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node
     volumes:
       - ${NODE_PATH_HOST}:/app/laravel-echo-server.json:ro
-    environment:
-      - TZ=${TIME_ZONE}
     ports:
       - "${LARAVEL_ECHO_SERVER_PORT}:6001"
     links:
