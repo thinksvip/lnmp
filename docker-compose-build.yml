@@ -15,8 +15,6 @@ services:
       - ${NGINX_HOST_CONF_PATH}conf.d/:/etc/nginx/conf.d/:ro,cached
       - ${NGINX_HOST_CONF_PATH}nginx.conf:/etc/nginx/nginx.conf:ro,cached
       - ${NGINX_HOST_LOG_PATH}:/var/log/nginx/:rw,cached
-    environment:
-      - TZ=${TIME_ZONE}
     # 映射80和443端口
     ports:
       - "${NGINX_HOST_HTTP_PORT}:80"
