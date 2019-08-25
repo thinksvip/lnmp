@@ -32,3 +32,4 @@ RUN rm /var/cache/apk/* \
     && usermod -u 1000 www-data
 
 WORKDIR /var/www/html/
+USER www-data
