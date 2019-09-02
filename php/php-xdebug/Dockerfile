@@ -209,13 +209,12 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 #     fi && \
 #     docker-php-ext-enable swoole
 # COMPOSER_PHPCSFIXER
-USER www-data
 RUN composer global require friendsofphp/php-cs-fixer && \
 # COMPOSER_CODESNIFFER
-    composer global require "squizlabs/php_codesniffer=*" 
+    composer global require "squizlabs/php_codesniffer=*" && \
+    composer clear-cache
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
-USER root
 # Clean up
 RUN apk del autoconf g++ make && rm -rf /tmp/* /var/cache/apk/*
 
