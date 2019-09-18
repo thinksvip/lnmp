@@ -70,7 +70,7 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # INSTALL_MYSQLI
     docker-php-ext-install mysqli && \
 # INSTALL_MBSTRING
-    docker-php-ext-install pdo_mysql && \
+    docker-php-ext-install mbstring && \
 # INSTALL_EXIF
     # Enable Exif if PHP extentions requirements
     docker-php-ext-install exif && \
