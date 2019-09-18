@@ -39,8 +39,10 @@
     │   └── package.json
     ├── php
     │   ├── Dockerfile                      php镜像构建文件
+    │   ├── php-queue
+    │   │   └── Dockerfile                  php-queue镜像构建文件
     │   └── php-xdebug
-    │       └── Dockerfile                  php镜像构建文件 支持xdebug
+    │       └── Dockerfile                  php镜像构建文件 含xdebug 开发环境使用
     ├── redis
     │   └── Dockerfile                      redis镜像构建文件
     ├── www                                 项目源码目录
@@ -58,19 +60,25 @@
 ## 2. 快速使用
 1. 本地安装`git`、`docker`和`docker-compose`。
 2. `clone`项目：
+
 ```
     $ git clone git@github.com:thinksvip/lnmp.git
 ```
+
 3. 如果不是`root`用户，还需将当前用户加入`docker`用户组：
+
 ```
     $ sudo gpasswd -a ${USER} docker
 ```
+
 4. 启动：
+
 ```
     $ cd lnmp
     $ cp env-example .env
     $ docker-compose up
 ```
+
 5. 访问在浏览器中访问：
 
  - [http://localhost](http://localhost)： 默认*http*站点
@@ -104,9 +112,11 @@
 打开~/.bashrc，加上：
 ```bash
     alias dnginx='docker exec -it nginx /bin/sh'
-    alias dphp='docker exec -it php /bin/bash'
+    alias dphp='docker exec -it php sh'
     alias dmysql='docker exec -it mysql /bin/bash'
     alias dredis='docker exec -it redis /bin/bash'
+    alias dqueue='docker exec -it queue sh'
+    alias dnode='docker exec -it node sh'       
 ```
 
 ## 5. 使用Log
@@ -130,10 +140,11 @@ Nginx日志是我们用得最多的日志，所以我们单独放在根目录`lo
 1. 在主机中创建日志文件并修改权限：
 
 ```bash
-    touch log/php-fpm/php-fpm.error.log
-    chmod a+w log/php-fpm.error.log
+    $ touch log/php-fpm/php-fpm.error.log
+    $ chmod a+w log/php-fpm.error.log
 ```
 2. 主机上打开并修改PHP-FPM的配置文件`conf/www.conf`，找到如下一行，删除注释，并改值为：
+
 ```
     php_admin_value[error_log] = /var/log/php-fpm/php-fpm.error.log
 ```
@@ -142,14 +153,14 @@ Nginx日志是我们用得最多的日志，所以我们单独放在根目录`lo
 ### 5.2 MySQL日志
 因为MySQL容器中的MySQL使用的是`mysql`用户启动，它无法自行在`/var/log`下的增加日志文件。在启动容器组后给`/var/log/mysql/`文件夹更所有者为`mysql`。更改文件夹所有者后重启`mysql`容器。
 ```
-    docker exec mysql chown mysql:root /var/log/mysql
-    docker-compose restart mysql
+    $ docker exec mysql chown mysql:root /var/log/mysql
+    $ docker-compose restart mysql
 ```
 重启完成后在`./log/mysql/`会生成`mysql-slow.log`日志文件。
 ## 6. 使用composer
 lnmp默认已经在容器中安装了composer，使用时先进入容器：
 ```
-    $ docker exec -it php /bin/bash
+    $ docker exec -it php sh
 ```
 然后进入相应目录，使用composer：
 ```
@@ -169,9 +180,19 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
     opcache.enable=0
 ```
 `opcache`具体配置需查看`./conf/php/php.ini`中 `[opcache]`
+## 8. 使用queue
+设置项目路径
+```
+    $ sed -i 's/APP_CODE_PATH=/APP_CODE_PATH=Your project name/g' .env
 
-## 8. 使用xdebug
-默认情况下，我们已经安装了`Xdebug`的扩展，但并未在`php.ini`文件中配置启用。要使用Xdebug的调试，在`./conf/php/php.ini`的文件最后这几行将注释取消：
+```
+查看调度输出
+```
+    $ docker-compose logs queue
+```
+
+## 9. 使用xdebug
+默认情况下，我们已经`dev`环境安装了`Xdebug`的扩展，但并未在`php.ini`文件中配置启用。要使用Xdebug的调试，在`./conf/php/php.ini`的文件最后这几行将注释取消：
 ```
     [XDebug]
     xdebug.enable = on
@@ -189,7 +210,7 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
     $ docker-compose restart php
 ```
 
-## 9. 在正式环境中安全使用
+## 10. 在正式环境中安全使用
 要在正式环境中使用，请：
 1. 在php.ini中关闭XDebug调试
 2. 增强MySQL数据库访问的安全策略
@@ -206,7 +227,7 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
 3. `mysql`日志文件授权为何不在`Dockerfile`中使用`RUN` 命令直接授权。因为`Dockerfile`中`VOLUME`指令之后的任何内容都无法对该卷进行更改。我们的镜像是基于官方镜像搭建，官方镜像在构建时使用过`VOLUME`指令。
    >请参考： https://container-solutions.com/understanding-volumes-docker/
 4. 项目权限问题 
-   >进入php容器 `docker-compose exec php bash`
+   >进入php容器 `docker-compose exec php sh`
 
    >授权 `chown -R www-data:www-data /var/www/html`
 
