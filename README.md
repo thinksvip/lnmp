@@ -165,7 +165,7 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
 然后进入相应目录，使用composer：
 ```
     $ cd /var/www/html/
-    $ composer update
+    $ composer install
 ```
 因为composer依赖于PHP，所以，是必须在容器里面操作composer的。
 
