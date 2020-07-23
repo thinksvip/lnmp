@@ -16,6 +16,7 @@ RUN apk --update add build-base \
   libmemcached-dev \
   libmcrypt-dev \
   libxml2-dev \
+  oniguruma-dev \
   pcre-dev \
   zlib-dev \
   autoconf \
@@ -23,10 +24,10 @@ RUN apk --update add build-base \
   libgsasl-dev \
   shadow
 
+RUN pecl channel-update pecl.php.net && pecl install mcrypt-1.0.3 memcached redis && docker-php-ext-enable mcrypt memcached redis
 
 RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql tokenizer xml pcntl
 
-RUN pecl channel-update pecl.php.net && pecl install memcached redis && docker-php-ext-enable memcached redis
 
 RUN rm /var/cache/apk/* \
     && usermod -u 1000 www-data

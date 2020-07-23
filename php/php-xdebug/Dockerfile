@@ -33,11 +33,24 @@ RUN apk --update add \
   g++ \
   autoconf \
   make \
-  shadow
+  shadow \ 
+  oniguruma-dev \
+  libwebp-dev 
 
+# INSTALL_MCRYPT
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7.4" ]; then \
+    pecl install mcrypt-1.0.3 && docker-php-ext-enable mcrypt; \
+    fi
 # INSTALL_GD
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7.4" ]; then \
+        # "--with-xxx-dir" was removed from php 7.4,
+        # issue: https://github.com/docker-library/php/issues/912
+        options="--with-freetype --with-jpeg --with-webp"; \
+    else \
+        options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
+    fi 
 RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-configure gd ${options} && \
     docker-php-ext-install gd && \
 # INSTALL_INTL
     # Install intl and requirements
@@ -58,8 +71,8 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
     apk add --no-cache bzip2-dev && \
     docker-php-ext-install bz2 && \
 # INSTALL_ZIP
-    apk --update add libzip-dev && \
-    docker-php-ext-configure zip --with-libzip && \
+    apk --update add libzip-dev zip && \
+    docker-php-ext-configure zip --with-zip && \
     # Install the zip extension
     docker-php-ext-install zip && \
 # INSTALL_PCNTL
@@ -118,9 +131,6 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 #     docker-php-ext-install dba && \
 # # INSTALL_INTERBASE
 #     echo "Alpine linux do not support interbase/firebird!!!"
-# # INSTALL_MCRYPT
-#     apk add --no-cache libmcrypt-dev && \
-#     docker-php-ext-install mcrypt && \
 # # INSTALL_CURL
 #     docker-php-ext-install curl && \
 # # INSTALL_READLINE
