@@ -64,9 +64,6 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # INSTALL_XMLRPC
 	apk add --no-cache libxslt-dev && \
     docker-php-ext-install xmlrpc && \
-# INSTALL_WDDX
-	apk add --no-cache libxslt-dev && \
-    docker-php-ext-install wddx && \
 # INSTALL_BZ2
     apk add --no-cache bzip2-dev && \
     docker-php-ext-install bz2 && \
