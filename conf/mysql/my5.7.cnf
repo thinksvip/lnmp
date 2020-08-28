@@ -103,13 +103,13 @@ wait_timeout = 28800
 # localhost which is more compatible and is not less secure.
 #bind-address	= 127.0.0.1
 
+# Recommended in standard MySQL setup
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
 [mysqldump]
 quick
 max_allowed_packet = 500M
 log-error	= /var/log/mysql/error.log
-
-# Recommended in standard MySQL setup
-sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
 
 [mysql]
 no-auto-rehash
