@@ -74,7 +74,7 @@ services:
     build:
       context: ./mysql
     volumes:
-      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/my.cnf:ro,cached
+      - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/conf.d/mysql.cnf:ro,cached
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
       - ${MYSQL_HOST_LOG_PATH}:/var/log/mysql/:rw,cached
     environment:
