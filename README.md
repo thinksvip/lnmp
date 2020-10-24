@@ -62,7 +62,7 @@
 2. `clone`项目：
 
 ```
-    $ git clone git@github.com:thinksvip/lnmp.git
+    $ git clone https://github.com/thinksvip/lnmp.git
 ```
 
 3. 如果不是`root`用户，还需将当前用户加入`docker`用户组：
@@ -199,9 +199,9 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
     xdebug.remote_enable = on
     xdebug.remote_connect_back = on
     xdebug.idekey = "PHPSTORM"
-    xdebug.remote_autostart = on
+    xdebug.remote_autostart = off
     xdebug.remote_handler = "dbgp"
-    xdebug.remote_host = "192.168.31.210"
+    xdebug.remote_host = docker.for.win.localhost #如果你是 Mac 用户，修改为 docker.for.mac.localhost
     xdebug.remote_port = "9001"
     xdebug.remote_log = "/var/log/php-fpm/xdebug_remote.log"
 ```
@@ -209,8 +209,18 @@ lnmp默认已经在容器中安装了composer，使用时先进入容器：
 ```
     $ docker-compose restart php
 ```
+## 10. linux 部署需开启NAT转发
 
-## 10. 在正式环境中安全使用
+### centos8.2 firewall防火墙为例
+
+```
+    firewall-cmd --permanent --zone=public --add-masquerade
+    firewall-cmd --reload
+    systemctl restart firewalld 
+    systemctl restart docker
+```
+
+## 11. 在正式环境中安全使用
 要在正式环境中使用，请：
 1. 在php.ini中关闭XDebug调试
 2. 增强MySQL数据库访问的安全策略
