@@ -128,8 +128,8 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 #     docker-php-ext-install dba && \
 # # INSTALL_INTERBASE
 #     echo "Alpine linux do not support interbase/firebird!!!"
-# INSTALL_CURL
-    docker-php-ext-install curl && \
+# # INSTALL_CURL
+#     docker-php-ext-install curl && \
 # # INSTALL_READLINE
 # 	  apk add --no-cache readline-dev
 # 	  apk add --no-cache libedit-dev
