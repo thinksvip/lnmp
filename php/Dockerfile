@@ -128,8 +128,8 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 #     docker-php-ext-install dba && \
 # # INSTALL_INTERBASE
 #     echo "Alpine linux do not support interbase/firebird!!!"
-# # INSTALL_CURL
-#     docker-php-ext-install curl && \
+# INSTALL_CURL
+    docker-php-ext-install curl && \
 # # INSTALL_READLINE
 # 	  apk add --no-cache readline-dev
 # 	  apk add --no-cache libedit-dev
@@ -221,7 +221,9 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 # # COMPOSER_CODESNIFFER
 #     composer global require "squizlabs/php_codesniffer=*" 
 # INSTALL_YAR
-RUN pecl install yar && \
+RUN pecl install msgpack &&\
+    docker-php-ext-enable msgpack &&\
+    pecl install yar && \
     docker-php-ext-enable yar
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
