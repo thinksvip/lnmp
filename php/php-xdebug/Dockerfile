@@ -220,6 +220,9 @@ RUN composer global require friendsofphp/php-cs-fixer && \
 # COMPOSER_CODESNIFFER
     composer global require "squizlabs/php_codesniffer=*" && \
     composer clear-cache
+# INSTALL_YAR
+RUN pecl install yar && \
+    docker-php-ext-enable yar
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 # Clean up
