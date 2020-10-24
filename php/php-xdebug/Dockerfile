@@ -25,7 +25,7 @@ RUN apk --no-cache add tzdata && \
 
 # Install general dependencies
 RUN apk --update add \
-  curl \
+  curl-dev \
   libevent-dev \
   libmcrypt-dev \
   libxml2-dev \
