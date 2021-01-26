@@ -225,6 +225,10 @@ RUN pecl install msgpack &&\
     docker-php-ext-enable msgpack &&\
     pecl install yar && \
     docker-php-ext-enable yar
+# INSTALL_RDKAFKA
+RUN apk add --no-cache --update librdkafka && \
+    pecl install rdkafka && \
+    docker-php-ext-enable rdkafka
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
