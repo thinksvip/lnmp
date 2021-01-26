@@ -181,9 +181,7 @@ RUN curl -s http://getcomposer.org/installer | php && \
 RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS && \
     printf "\n" | pecl install -o -f redis  && \
     docker-php-ext-enable redis && \
-    rm -rf /usr/share/php && \
-    rm -rf /tmp/*  && \
-    apk del .phpize-deps 
+    rm -rf /usr/share/php
 # INSTALL_XDEBUG
 #  #Install the xdebug extension
 RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
@@ -226,12 +224,12 @@ RUN pecl install msgpack &&\
     pecl install yar && \
     docker-php-ext-enable yar
 # INSTALL_RDKAFKA
-RUN apk add --no-cache --update librdkafka && \
+RUN apk add --no-cache --update librdkafka-dev  && \
     pecl install rdkafka && \
-    docker-php-ext-enable rdkafka
+    docker-php-ext-enable rdkafka 
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 # Clean up
-RUN apk del autoconf g++ make && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ make  .phpize-deps && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
