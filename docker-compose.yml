@@ -28,17 +28,14 @@ services:
 
   #PHP  
   php:
-    depends_on:
-      - mysql
-      - redis
     # image: thinksvip/lnmp:php-alpine
     image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
       - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
-      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
-      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
+      - ${PHP_FRM_HOST_CONF_PATH}zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
     ports:
       - "${PHP_FRM_PORT}:9000"
@@ -51,6 +48,29 @@ services:
     cap_add:
       - SYS_PTRACE
     container_name: php
+
+  #PHP  
+  php8:
+    # image: thinksvip/lnmp:php-alpine
+    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine-8
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP8_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${PHP8_FRM_HOST_CONF_PATH}php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:ro,cached
+      - ${PHP8_FRM_HOST_CONF_PATH}zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
+      - ${PHP8_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
+    ports:
+      - "${PHP_FRM_PORT}:9000"
+    extra_hosts:
+      - "dockerhost:${DOCKER_HOST_IP}"
+    networks:
+      frontend:
+      backend: 
+    restart: always
+    cap_add:
+      - SYS_PTRACE
+    container_name: php8
 
   # Queue
   queue:

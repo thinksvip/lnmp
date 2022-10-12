@@ -189,15 +189,15 @@ RUN curl -s http://getcomposer.org/installer | php && \
 RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS && \
     printf "\n" | pecl install -o -f redis  && \
     docker-php-ext-enable redis && \
-    rm -rf /usr/share/php
+    rm -rf /usr/share/php 
 # INSTALL_XDEBUG
 #  #Install the xdebug extension
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-      pecl install xdebug-2.5.5; \
-    else \
-      pecl install xdebug; \
-    fi && \
-    docker-php-ext-enable xdebug 
+# RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+#       pecl install xdebug-2.5.5; \
+#     else \
+#       pecl install xdebug; \
+#     fi && \
+#     docker-php-ext-enable xdebug 
 # INSTALL_MEMCACHED
     # Install the php memcached extension
 RUN apk add --no-cache libmemcached-dev zlib-dev && \
@@ -222,10 +222,10 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 #     fi && \
 #     docker-php-ext-enable swoole
 # COMPOSER_PHPCSFIXER
-RUN composer global require friendsofphp/php-cs-fixer && \
-# COMPOSER_CODESNIFFER
-    composer global require "squizlabs/php_codesniffer=*" && \
-    composer clear-cache
+# 
+# RUN composer global require friendsofphp/php-cs-fixer && \
+# # COMPOSER_CODESNIFFER
+#     composer global require "squizlabs/php_codesniffer=*" 
 # INSTALL_YAR
 RUN pecl install msgpack &&\
     docker-php-ext-enable msgpack &&\
@@ -237,6 +237,9 @@ RUN apk add --no-cache --update librdkafka-dev  && \
     docker-php-ext-enable rdkafka 
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
+
+
+
 # Clean up
 RUN apk del autoconf g++ make  .phpize-deps && rm -rf /tmp/* /var/cache/apk/*
 

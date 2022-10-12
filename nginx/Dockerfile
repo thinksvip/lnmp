@@ -1,4 +1,8 @@
-FROM nginx:alpine
+ARG if [! -n $NGINX_VERSION ]; then \
+  else  NGINX_VERSION=alpine \
+  fi  
+
+FROM nginx:${NGINX_VERSION}
 
 LABEL maintainer="Think <think@thinks.fun>"
 

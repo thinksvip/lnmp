@@ -1,4 +1,4 @@
-# **LNMP**（Docker + Nginx + MySQL + PHP7/5 + Redis）**PHP统一开发环境**。
+# **LNMP**（Docker + Nginx + MySQL + PHP + Redis）**PHP统一开发环境**。
 
 
 ## 1.项目结构
@@ -16,11 +16,15 @@
     │   │   │   ├── site2.conf              https默认演示站点
     │   │   │   └── upstream.conf           fastcgi_pass配置文件
     │   │   └── nginx.conf                  nginx默认配置文件
-    │   ├── php
-    │   │   ├── php-fpm.d                   php配置目录
-    │   │   │   ├── www.conf                php-fpm默认配置文件
+    │   ├── php                             多版本php配置
+    │   │   ├── php                         
+    │   │   │   ├── php-fpm.conf            php-fpm默认配置文件
+    │   │   │   ├── php.ini                 php默认配置
     │   │   │   └── zz-docker.conf          fastcgi_pass 监听配置文件 unix socket / tcp socket
-    │   │   └── php.ini                     php默认配置
+    │   │   └── php8
+    │   │       ├── php-fpm.conf
+    │   │       ├── php.ini
+    │   │       └── zz-docker.conf
     │   └── redis           
     │       └── redis.conf                  redis默认配置
     ├── log                                 日志文件
@@ -38,7 +42,10 @@
     │   │   └── laravel-echo-server.json    支持 laravel echo server
     │   └── package.json
     ├── php
-    │   ├── Dockerfile                      php镜像构建文件
+    │   ├── php
+    │   │   └── Dockerfile                  php镜像构建文件
+    │   ├── php8
+    │   │   └── Dockerfile                  php8镜像构建文件
     │   ├── php-queue
     │   │   └── Dockerfile                  php-queue镜像构建文件
     │   └── php-xdebug
@@ -105,6 +112,11 @@
     $ docker-compose down
     $ docker-compose up 
 ```
+ 新增多版本PHP集成
+```
+    $ docker-compose up php php8
+```
+
 
 ## 4. 添加快捷命令
 在开发的时候，我们可能经常使用docker exec -it切换到容器中，把常用的做成命令别名是个省事的方法。

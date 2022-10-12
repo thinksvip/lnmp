@@ -1,4 +1,6 @@
-ARG NODE_VERSION=alpine
+ARG if [! -n $NODE_VERSION ]; then \
+  else  NODE_VERSION=alpine \
+  fi  
 
 FROM node:${NODE_VERSION}
 
@@ -19,9 +21,8 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 
-RUN apk add --update \
-    python \
-    python-dev \
+RUN apk --no-cach add --update \
+    python3 \
     py-pip \
     build-base
 

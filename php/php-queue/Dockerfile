@@ -1,6 +1,8 @@
-ARG PHP_VERSION=7.4
+ARG if [! -n $PHP_QUEUE_VERSION ]; then \
+  else  PHP_QUEUE_VERSION=7.4 \
+  fi  
 
-FROM php:${PHP_VERSION}-alpine
+FROM php:${PHP_QUEUE_VERSION}-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
 

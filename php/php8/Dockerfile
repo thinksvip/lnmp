@@ -1,19 +1,10 @@
-ARG PHP_FPM_VERSION=7.4
+ARG if [! -n $PHP_FPM_VERSION ]; then \
+  else  PHP_FPM_VERSION=8.1 \
+  fi  
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
-
-# Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
-# tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into
-# PHP by default. If missing, install them directly by `docker-php-ext-install extension_name`
-
-# Notice:
-# 1. Mcrypt was DEPRECATED in PHP 7.1.0, and REMOVED in PHP 7.2.0.
-# 2. opcache requires PHP version >= 7.0.0.
-# 3. soap requires libxml2-dev.
-# 4. xml, xmlrpc, wddx require libxml2-dev and libxslt-dev.
-# 5. Line `&& :\` is just for better reading and do nothing.
 
 # Set Timezone
 # https://wiki.alpinelinux.org/wiki/Setting_the_timezone
@@ -24,7 +15,7 @@ RUN apk --no-cache add tzdata && \
     apk del tzdata
 
 # Install general dependencies
-RUN apk --update add \
+RUN apk --update add --no-cache \
   curl-dev \
   libevent-dev \
   libmcrypt-dev \
@@ -38,17 +29,26 @@ RUN apk --update add \
   libwebp-dev 
 
 # INSTALL_MCRYPT
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7.4" ]; then \
-    pecl install mcrypt-1.0.3 && docker-php-ext-enable mcrypt; \
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "7.2" ]; then \
+        pecl install mcrypt && docker-php-ext-enable mcrypt; \
+    else \
+         docker-php-ext-install mcrypt; \
     fi
 # INSTALL_GD
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7.4" ]; then \
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "7.4" ]; then \
         # "--with-xxx-dir" was removed from php 7.4,
         # issue: https://github.com/docker-library/php/issues/912
         options="--with-freetype --with-jpeg --with-webp"; \
     else \
         options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
     fi 
+# INSTALL_XMLRPC
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "8" ]; then \
+        pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc; \
+    else \
+        docker-php-ext-install xmlrpc; \
+    fi 
+
 RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
     docker-php-ext-configure gd ${options} && \
     docker-php-ext-install gd && \
@@ -61,9 +61,6 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # INSTALL_XSL
 	apk add --no-cache libxslt-dev && \
     docker-php-ext-install xsl && \
-# INSTALL_XMLRPC
-	apk add --no-cache libxslt-dev && \
-    docker-php-ext-install xmlrpc && \
 # INSTALL_BZ2
     apk add --no-cache bzip2-dev && \
     docker-php-ext-install bz2 && \
