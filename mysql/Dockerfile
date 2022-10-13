@@ -1,6 +1,4 @@
-ARG if [! -n $MYSQL_VERSION ]; then \
-  else  MYSQL_VERSION=8.0 \
-  fi  
+ARG if [! -n $MYSQL_VERSION ]; then else MYSQL_VERSION=8.0 fi  
 
 FROM mysql:${MYSQL_VERSION}
 

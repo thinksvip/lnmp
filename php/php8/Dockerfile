@@ -1,10 +1,10 @@
-ARG if [! -n $PHP_FPM_VERSION ]; then \
-  else  PHP_FPM_VERSION=8.1 \
-  fi  
+ARG if [! -n $PHP_FPM_VERSION ]; then else PHP_FPM_VERSION=8.1 fi  
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
+
+ARG PHP_FPM_VERSION
 
 # Set Timezone
 # https://wiki.alpinelinux.org/wiki/Setting_the_timezone

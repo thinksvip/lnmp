@@ -1,10 +1,10 @@
-ARG if [! -n $PHP_FPM_VERSION ]; then \
-  else  PHP_FPM_VERSION=7.4 \
-  fi  
+ARG if [! -n $PHP_FPM_VERSION ]; then else PHP_FPM_VERSION=7.4 fi  
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
+
+ARG PHP_FPM_VERSION
 
 # Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
 # tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into

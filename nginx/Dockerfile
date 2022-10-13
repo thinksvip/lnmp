@@ -1,6 +1,4 @@
-ARG if [! -n $NGINX_VERSION ]; then \
-  else  NGINX_VERSION=alpine \
-  fi  
+ARG if [! -n $NGINX_VERSION ]; then else NGINX_VERSION=alpine fi  
 
 FROM nginx:${NGINX_VERSION}
 
