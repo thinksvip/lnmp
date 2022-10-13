@@ -1,0 +1,213 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+jobs:
+  build-nginx-image:
+    name: Build Nginx Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./nginx
+          platforms: linux/arm64
+          push: true
+          tags: thinksvip/lnmp:nginx
+
+  build-php-image:
+    name: Build PHP Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./php/php
+          platforms: linux/amd64
+          push: true
+          tags: thinksvip/lnmp:php-alpine
+
+  build-php8-image:
+    name: Build PHP8 Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./php/php8
+          platforms: linux/arm64
+          push: true
+          tags: thinksvip/lnmp:php8-alpine
+
+  build-queue-image:
+    name: Build Queue Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./php/php-queue
+          platforms: linux/amd64
+          push: true
+          tags: thinksvip/lnmp:queue
+          
+  build-mysql-image:
+    name: Build MySQL Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./mysql
+          platforms: linux/amd64
+          push: true
+          tags: thinksvip/lnmp:mysql
+
+  build-redis-image:
+    name: Build Redis Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./redis
+          platforms: linux/arm64
+          push: true
+          tags: thinksvip/lnmp:redis
+
+  build-node-image:
+    name: Build Node Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./node
+          platforms: linux/amd64
+          push: true
+          tags: thinksvip/lnmp:node
+  
+  build-php-xdebug-image:
+    name: Build PHP Xdebug Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v2
+        with:
+          context: ./php/php-xdebug
+          platforms: linux/amd64
+          push: true
+          tags: thinksvip/lnmp:php-alpine-dev
