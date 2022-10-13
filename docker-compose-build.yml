@@ -56,7 +56,7 @@ services:
     container_name: php
 
 
-  #PHP  
+  #PHP8  
   php8:
     build:
       context: ./php/php8

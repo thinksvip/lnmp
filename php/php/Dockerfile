@@ -40,13 +40,13 @@ RUN apk --update add \
   libwebp-dev 
 
 # INSTALL_MCRYPT
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "7.2" ]; then \
+RUN if [ `echo "${PHP_FPM_VERSION} > 7.2"|bc` -eq 1 ] ; then \
         pecl install mcrypt && docker-php-ext-enable mcrypt; \
     else \
-         docker-php-ext-install mcrypt; \
+        docker-php-ext-install mcrypt; \
     fi
 # INSTALL_GD
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "7.4" ]; then \
+RUN if [ `echo "${PHP_FPM_VERSION} > 7.4"|bc` -eq 1 ] ; then \
         # "--with-xxx-dir" was removed from php 7.4,
         # issue: https://github.com/docker-library/php/issues/912
         options="--with-freetype --with-jpeg --with-webp"; \
@@ -54,7 +54,7 @@ RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "7.4" ]; then \
         options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
     fi 
 # INSTALL_XMLRPC
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") > "8" ]; then \
+RUN if [ `echo "${PHP_FPM_VERSION} > 8"|bc` -eq 1 ] ; then \
         pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc; \
     else \
         docker-php-ext-install xmlrpc; \

@@ -49,10 +49,10 @@ services:
       - SYS_PTRACE
     container_name: php
 
-  #PHP  
+  #PHP8  
   php8:
     # image: thinksvip/lnmp:php-alpine
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine-8
+    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php8-alpine
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
