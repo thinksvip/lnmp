@@ -61,7 +61,7 @@ services:
       - ${PHP8_FRM_HOST_CONF_PATH}zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro,cached
       - ${PHP8_FRM_HOST_LOG_PATH}:/var/log/php-fpm/:rw,cached
     ports:
-      - "${PHP_FRM_PORT}:9000"
+      - "${PHP8_FRM_PORT}:9000"
     extra_hosts:
       - "dockerhost:${DOCKER_HOST_IP}"
     networks:

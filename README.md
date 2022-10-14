@@ -112,11 +112,32 @@
     $ docker-compose down
     $ docker-compose up 
 ```
- 新增多版本PHP集成
+新增多版本PHP集成
 ```
     $ docker-compose up php php8
 ```
+<span style="color:red;">注意：PHP多版本使用Nginx fastcgi_pass 配置如下</span>
 
+
+PHP7 及以下
+```
+    location ~ \.php$ {
+        fastcgi_pass   php:9000;
+        fastcgi_index  index.php;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+```
+
+PHP8
+```
+    location ~ \.php$ {
+        fastcgi_pass   php8:9000;
+        fastcgi_index  index.php;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    }
+```
 
 ## 4. 添加快捷命令
 在开发的时候，我们可能经常使用docker exec -it切换到容器中，把常用的做成命令别名是个省事的方法。
