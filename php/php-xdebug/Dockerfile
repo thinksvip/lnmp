@@ -192,12 +192,24 @@ RUN apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS && \
     rm -rf /usr/share/php
 # INSTALL_XDEBUG
 #  #Install the xdebug extension
-RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+RUN   if [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ] || { [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && { [ $(php -r "echo PHP_MINOR_VERSION;") = "4" ] || [ $(php -r "echo PHP_MINOR_VERSION;") = "3" ] ;} ;}; then \
+    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ]; then \
+      pecl install xdebug-3.2.1; \
+    else \
+      pecl install xdebug-3.1.6; \
+    fi; \
+  else \
+    if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       pecl install xdebug-2.5.5; \
     else \
-      pecl install xdebug; \
-    fi && \
-    docker-php-ext-enable xdebug 
+      if [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ]; then \
+        pecl install xdebug-2.9.0; \
+      else \
+        pecl install xdebug-2.9.8; \
+      fi \
+    fi \
+  fi && \
+  docker-php-ext-enable xdebug 
 # INSTALL_MEMCACHED
     # Install the php memcached extension
 RUN apk add --no-cache libmemcached-dev zlib-dev && \
@@ -207,6 +219,20 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
       pecl install memcached; \
     fi && \
       docker-php-ext-enable memcached
+# INSTALL_MONGO    
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+      pecl install mongo; \
+      docker-php-ext-enable mongo; \
+      php -m | grep -oiE '^mongo$'; \
+    else \
+      if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && { [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ] || [ $(php -r "echo PHP_MINOR_VERSION;") = "1" ] ;}; then \
+        pecl install mongodb-1.9.2; \
+      else \
+        pecl install mongodb; \
+      fi; \
+      docker-php-ext-enable mongodb; \
+      php -m | grep -oiE '^mongodb$'; \
+    fi; 
 # # Install swoole extension
 # # swoole require PHP version 5.5 or later.
 #     # Install Php Swoole Extension
