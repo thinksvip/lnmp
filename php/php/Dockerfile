@@ -226,6 +226,14 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 # RUN composer global require friendsofphp/php-cs-fixer && \
 # # COMPOSER_CODESNIFFER
 #     composer global require "squizlabs/php_codesniffer=*" 
+# Install Php xlswriter Extension \
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") != "5" ]; then \
+        pecl install xlswriter  &&\
+        docker-php-ext-enable xlswriter &&\
+        php -m | grep -q 'xlswriter'; \
+    else \
+        echo "PHP Extension for xlswriter is not supported for PHP 5.0";\
+    fi 
 # INSTALL_YAR
 RUN pecl install msgpack &&\
     docker-php-ext-enable msgpack &&\
