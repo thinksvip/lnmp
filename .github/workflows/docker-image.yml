@@ -30,6 +30,13 @@ jobs:
           push: true
           tags: thinksvip/lnmp:nginx
 
+      - name: Login to Aliyun Container Registry
+        run: |
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./nginx --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:nginx
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:nginx
+
   build-php-image:
     name: Build PHP Image
     runs-on: ubuntu-latest
@@ -55,6 +62,13 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: thinksvip/lnmp:php-alpine
+
+      - name: Login to Aliyun Container Registry
+        run: |
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./php/php --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine
 
   build-php8-image:
     name: Build PHP8 Image
@@ -82,6 +96,13 @@ jobs:
           push: true
           tags: thinksvip/lnmp:php8-alpine
 
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./php/php8 --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php8-alpine
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php8-alpine
+          
   build-queue-image:
     name: Build Queue Image
     runs-on: ubuntu-latest
@@ -107,6 +128,12 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: thinksvip/lnmp:queue
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./php/php-queue --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:queue
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:queue
           
   build-mysql-image:
     name: Build MySQL Image
@@ -134,6 +161,13 @@ jobs:
           push: true
           tags: thinksvip/lnmp:mysql
 
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./mysql --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:mysql
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:mysql
+
   build-redis-image:
     name: Build Redis Image
     runs-on: ubuntu-latest
@@ -160,6 +194,13 @@ jobs:
           push: true
           tags: thinksvip/lnmp:redis
 
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./redis --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
+           
   build-node-image:
     name: Build Node Image
     runs-on: ubuntu-latest
@@ -185,7 +226,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: thinksvip/lnmp:node
-  
+ 
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./node --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node 
+
   build-php-xdebug-image:
     name: Build PHP Xdebug Image
     runs-on: ubuntu-latest
@@ -211,3 +259,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: thinksvip/lnmp:php-alpine-dev
+
+      - name: Login to Aliyun Container Registry
+        run: | 
+          docker version
+          docker login --username=${{ secrets.ALIYUN_USERNAME }} --password=${{ secrets.ALIYUN_PASSWORD }} registry.cn-shenzhen.aliyuncs.com
+          docker build ./php/php-xdebug --file Dockerfile --tag registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine-dev
+          docker push registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine-dev           
