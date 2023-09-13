@@ -88,6 +88,30 @@ services:
     restart: always
     networks:
       backend: 
+      
+  # Worker
+  worker:
+    depends_on:
+      - php
+    # image: thinksvip/lnmp:php-worker
+    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-worker
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${SUPERVISOR_LOG}:/var/log/supervisor/:rw
+      - ${SUPERVISOR_CONF_FILE}:/etc/supervisor/supervisord.conf:ro
+    ports:
+      - "${SUPERVISOR_HOST_PORT}:9001"
+    container_name: worker
+    command: 
+     - /bin/sh
+     - -c
+     - |
+       supervisord -n -c /etc/supervisor/supervisord.conf
+    restart: always
+    networks:
+      backend: 
 
   # MySQL
   mysql:

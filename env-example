@@ -90,4 +90,8 @@ APP_CODE_PATH=
 PHP_QUEUE_VERSION=7.4
 
 
-
+### PHP_WORKER #############################################
+SUPERVISOR_LOG=./log/supervisor
+SUPERVISOR_CONF_FILE=./conf/php/worker/supervisord.conf
+SUPERVISOR_HOST_PORT=9001
+PHP_WORKER_VERSION=php-alpine

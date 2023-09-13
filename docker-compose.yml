@@ -6,8 +6,8 @@ services:
     depends_on:
       - php
     # nginx镜像的路径
-    # image: thinksvip/lnmp:nginx-alpine
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:nginx-alpine
+    image: thinksvip/lnmp:nginx-alpine
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:nginx-alpine
     # 这样使nginx容器把网站文件和目录存放到主机目录中，持久化和方便管理
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
@@ -28,8 +28,8 @@ services:
 
   #PHP  
   php:
-    # image: thinksvip/lnmp:php-alpine
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine
+    image: thinksvip/lnmp:php-alpine
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-alpine
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -51,8 +51,8 @@ services:
 
   #PHP8  
   php8:
-    # image: thinksvip/lnmp:php-alpine
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php8-alpine
+    image: thinksvip/lnmp:php-alpine
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php8-alpine
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -76,8 +76,8 @@ services:
   queue:
     depends_on:
       - php
-    # image: thinksvip/lnmp:php-queue
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-queue
+    image: thinksvip/lnmp:php-queue
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-queue
     volumes:
       - "${VOLUMES_DRIVER}:/sock"
       - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
@@ -89,10 +89,34 @@ services:
     networks:
       backend: 
 
+  # Worker
+  worker:
+    depends_on:
+      - php
+    image: thinksvip/lnmp:php-worker
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:php-worker
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${SUPERVISOR_LOG}:/var/log/supervisor/:rw
+      - ${SUPERVISOR_CONF_FILE}:/etc/supervisor/supervisord.conf:ro
+    ports:
+      - "${SUPERVISOR_HOST_PORT}:9001"
+    container_name: worker
+    command: 
+     - /bin/sh
+     - -c
+     - |
+       supervisord -n -c /etc/supervisor/supervisord.conf
+    restart: always
+    networks:
+      backend: 
+
   # MySQL
   mysql:
-    # image: thinksvip/lnmp:mysql
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:mysql
+    image: thinksvip/lnmp:mysql
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:mysql
     volumes:
       - ${MYSQL_HOST_CONF_PATH}my${MYSQL_VERSION}.cnf:/etc/mysql/conf.d/mysql.cnf:ro,cached
       - ${DATA_PATH_HOST}/mysql:/var/lib/mysql/:rw,cached
@@ -112,8 +136,8 @@ services:
 
   # REDIS
   redis:
-    # image: thinksvip/lnmp:redis
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
+    image: thinksvip/lnmp:redis
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:redis
     volumes:
       - ${DATA_PATH_HOST}/redis:/data/:rw,cached
       - ${REDIS_HOST_CONF_PATH}:/usr/local/redis/redis.conf:ro,cached
@@ -131,8 +155,8 @@ services:
   node:
     depends_on:
       - php
-    # image: thinksvip/lnmp:node
-    image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node
+    image: thinksvip/lnmp:node
+    # image: registry.cn-shenzhen.aliyuncs.com/thinks/lnmp:node
     volumes:
       - ${NODE_PATH_HOST}:/app/laravel-echo-server.json:ro
     ports:

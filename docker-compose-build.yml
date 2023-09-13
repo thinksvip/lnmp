@@ -100,8 +100,35 @@ services:
     command: php ${APP_CODE_PATH}/artisan queue:work --sleep=3 --tries=3
     restart: always
     networks:
-      backend: 
+      backend:
 
+  # Worker
+  worker:
+    depends_on:
+      - php
+    build:
+      context: ./php/php-worker
+      dockerfile: Dockerfile
+      args:
+        PHP_QUEUE_VERSION: ${PHP_QUEUE_VERSION}
+    volumes:
+      - "${VOLUMES_DRIVER}:/sock"
+      - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
+      - ${PHP_FRM_HOST_CONF_PATH}php.ini:/usr/local/etc/php/php.ini:ro,cached
+      - ${SUPERVISOR_LOG}:/var/log/supervisor/:rw
+      - ${SUPERVISOR_CONF_FILE}:/etc/supervisor/supervisord.conf:ro
+    ports:
+      - "${SUPERVISOR_HOST_PORT}:9001"
+    container_name: worker
+    command: 
+     - /bin/sh
+     - -c
+     - |
+       supervisord -n -c /etc/supervisor/supervisord.conf
+    restart: always
+    networks:
+      backend: 
+      
   # MySQL
   mysql:
     build:
