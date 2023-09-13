@@ -108,6 +108,32 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: thinksvip/lnmp:queue
+
+  build-worker-image:
+    name: Build Worker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+  
+      - name: Build and push latest images
+        uses: docker/build-push-action@v4
+        with:
+          context: ./php/php-worker
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: thinksvip/lnmp:php-worker
           
   build-mysql-image:
     name: Build MySQL Image
