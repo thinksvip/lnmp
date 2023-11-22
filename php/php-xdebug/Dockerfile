@@ -4,6 +4,8 @@ FROM thinksvip/lnmp:${PHP_WORKER_VERSION}
 
 LABEL maintainer="Think <think@thinks.fun>"
 
+RUN apk add --no-cache --update --virtual .phpize-deps autoconf g++ make libwebp-dev
+
 # INSTALL_XDEBUG
 #  #Install the xdebug extension
 RUN   if [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ] || { [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && { [ $(php -r "echo PHP_MINOR_VERSION;") = "4" ] || [ $(php -r "echo PHP_MINOR_VERSION;") = "3" ] ;} ;}; then \
@@ -24,3 +26,5 @@ RUN   if [ $(php -r "echo PHP_MAJOR_VERSION;") = "8" ] || { [ $(php -r "echo PHP
     fi \
   fi && \
   docker-php-ext-enable xdebug 
+
+  RUN apk del .phpize-deps autoconf g++ make libwebp-dev && apk del --purge && rm -rf /tmp/* /var/cache/apk/*

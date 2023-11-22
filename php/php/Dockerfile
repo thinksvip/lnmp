@@ -38,7 +38,8 @@ RUN apk --update add \
   libwebp-dev \
   llvm13-dev \
   clang-dev \
-  protobuf-c-compiler 
+  protobuf-c-compiler \
+  protobuf-dev
 
 # INSTALL_MCRYPT
 RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'false';") = "true" ]; then \
@@ -269,6 +270,6 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --defau
     docker-php-ext-enable skywalking_agent 
     
 # Clean up
-RUN apk del autoconf g++ make libwebp-dev llvm13-dev clang-dev protobuf-c-compiler .phpize-deps && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ make libwebp-dev llvm13-dev clang-dev protobuf-c-compiler  protobuf-dev .phpize-deps && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
