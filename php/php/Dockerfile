@@ -1,10 +1,8 @@
-ARG if [! -n $PHP_FPM_VERSION ]; then else PHP_FPM_VERSION=7.4 fi  
+ARG PHP_FPM_VERSION=7.4
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
 LABEL maintainer="Think <think@thinks.fun>"
-
-ARG PHP_FPM_VERSION
 
 # Extensions: ctype, dom, fileinfo, ftp, hash, iconv, json, pdo, pdo_sqlite, session,
 # tokenizer, simplexml, xml, xmlreader, xmlwriter and phar are bundled and compiled into
@@ -35,18 +33,21 @@ RUN apk --update add \
   g++ \
   autoconf \
   make \
-  shadow \ 
+  shadow \
   oniguruma-dev \
-  libwebp-dev 
+  libwebp-dev \
+  llvm13-dev \
+  clang-dev \
+  protobuf-c-compiler 
 
 # INSTALL_MCRYPT
-RUN if [ `echo "${PHP_FPM_VERSION} > 7.2"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'false';") = "true" ]; then \
         pecl install mcrypt && docker-php-ext-enable mcrypt; \
     else \
         docker-php-ext-install mcrypt; \
     fi
 # INSTALL_GD
-RUN if [ `echo "${PHP_FPM_VERSION} > 7.4"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.4', '>') ? 'true' : 'false';") = "true" ]; then \
         # "--with-xxx-dir" was removed from php 7.4,
         # issue: https://github.com/docker-library/php/issues/912
         options="--with-freetype --with-jpeg --with-webp"; \
@@ -54,7 +55,7 @@ RUN if [ `echo "${PHP_FPM_VERSION} > 7.4"|bc` -eq 1 ] ; then \
         options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
     fi 
 # INSTALL_XMLRPC
-RUN if [ `echo "${PHP_FPM_VERSION} > 8"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '8', '>') ? 'true' : 'false';") = "true" ]; then \
         pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc; \
     else \
         docker-php-ext-install xmlrpc; \
@@ -235,10 +236,10 @@ RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") != "5" ]; then \
         echo "PHP Extension for xlswriter is not supported for PHP 5.0";\
     fi 
 # INSTALL_YAR
-RUN pecl install msgpack &&\
-    docker-php-ext-enable msgpack &&\
-    pecl install yar && \
-    docker-php-ext-enable yar
+# RUN pecl install msgpack &&\
+#     docker-php-ext-enable msgpack &&\
+#     pecl install yar && \
+#     docker-php-ext-enable yar
 # INSTALL_MONGO
 RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       pecl install mongo; \
@@ -254,15 +255,20 @@ RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
       php -m | grep -oiE '^mongodb$'; \
     fi; 
 # INSTALL_RDKAFKA
-RUN apk add --no-cache --update librdkafka-dev  && \
-    pecl install rdkafka && \
-    docker-php-ext-enable rdkafka 
+# RUN apk add --no-cache --update librdkafka-dev  && \
+#     pecl install rdkafka && \
+#     docker-php-ext-enable rdkafka 
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
-
-
+# INSTALL_SKYWALKING
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y &&\
+    source $HOME/.cargo/env &&\
+    export RUSTFLAGS="-C target-feature=-crt-static" &&\
+    pecl install skywalking_agent &&\
+    docker-php-ext-enable skywalking_agent 
+    
 # Clean up
-RUN apk del autoconf g++ make  .phpize-deps && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ make libwebp-dev llvm13-dev clang-dev protobuf-c-compiler .phpize-deps && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data

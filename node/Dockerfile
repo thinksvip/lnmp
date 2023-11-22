@@ -1,4 +1,4 @@
-ARG if [! -n $NODE_VERSION ]; then  else NODE_VERSION=alpine fi  
+ARG NODE_VERSION=alpine
 
 FROM node:${NODE_VERSION}
 

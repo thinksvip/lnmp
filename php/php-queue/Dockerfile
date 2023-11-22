@@ -1,6 +1,4 @@
-ARG if [! -n $PHP_QUEUE_VERSION ]; then \
-  else  PHP_QUEUE_VERSION=7.4 \
-  fi  
+ARG PHP_QUEUE_VERSION=7.4
 
 FROM php:${PHP_QUEUE_VERSION}-alpine
 

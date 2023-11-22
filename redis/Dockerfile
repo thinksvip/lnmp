@@ -1,4 +1,4 @@
-ARG if [! -n $REDIS_VERSION ]; then else REDIS_VERSION=latest fi  
+ARG REDIS_VERSION=latest
 
 FROM redis:${REDIS_VERSION}
 

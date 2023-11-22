@@ -1,4 +1,4 @@
-ARG if [! -n $PHP_FPM_VERSION ]; then else PHP_FPM_VERSION=8.1 fi  
+ARG PHP_FPM_VERSION=8.1
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
