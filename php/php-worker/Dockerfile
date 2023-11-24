@@ -1,4 +1,4 @@
-ARG if [! -n $PHP_WORKER_VERSION ]; then else PHP_WORKER_VERSION=php-alpine fi 
+ARG PHP_WORKER_VERSION=php-apm
 
 FROM thinksvip/lnmp:${PHP_WORKER_VERSION}
 

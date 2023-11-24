@@ -35,11 +35,7 @@ RUN apk --update add \
   make \
   shadow \
   oniguruma-dev \
-  libwebp-dev \
-  llvm13-dev \
-  clang-dev \
-  protobuf-c-compiler \
-  protobuf-dev
+  libwebp-dev 
 
 # INSTALL_MCRYPT
 RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'false';") = "true" ]; then \
@@ -262,14 +258,7 @@ RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
-# INSTALL_SKYWALKING
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --default-toolchain none -y &&\
-    source $HOME/.cargo/env &&\
-    export RUSTFLAGS="-C target-feature=-crt-static" &&\
-    pecl install skywalking_agent &&\
-    docker-php-ext-enable skywalking_agent 
-    
 # Clean up
-RUN apk del autoconf g++ make libwebp-dev llvm13-dev clang-dev protobuf-c-compiler  protobuf-dev .phpize-deps && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ make libwebp-dev && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
