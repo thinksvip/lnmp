@@ -58,7 +58,7 @@ jobs:
           tags: thinksvip/lnmp:php-alpine
 
   build-php-apm-image:
-    name: Build PHP Image
+    name: Build PHP-APM Image
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
