@@ -58,6 +58,11 @@ RUN if [ $(php -r "echo version_compare(PHP_VERSION, '8', '>') ? 'true' : 'false
         docker-php-ext-install xmlrpc; \
     fi 
 
+# INSTALL_EXCIMER
+RUN apk --update add --virtual .build-deps $PHPIZE_DEPS && \
+    pecl install excimer && \
+    docker-php-ext-enable excimer
+
 RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
     docker-php-ext-configure gd ${options} && \
     docker-php-ext-install gd && \
@@ -170,7 +175,7 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-    apk add --no-cache file-dev imagemagick-dev && \
+    apk add --no-cache file-dev imagemagick-dev imagemagick libjpeg-turbo libgomp freetype-dev && \
     printf "\n" | pecl install imagick && \
     docker-php-ext-enable imagick
 # INSTALL_COMPOSER
@@ -258,7 +263,7 @@ RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
 # # Check PHP version:
 RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
-# Clean up
-RUN apk del autoconf g++ make libwebp-dev && apk del --purge && rm -rf /tmp/* /var/cache/apk/*
-
 RUN usermod -u 1000 www-data
+
+# Clean up
+RUN apk del autoconf g++ make libwebp-dev .build-deps && apk del --purge && rm -rf /tmp/* /var/cache/apk/*

@@ -1,4 +1,4 @@
-ARG PHP_FPM_VERSION=8.1
+ARG PHP_FPM_VERSION=8.2
 
 FROM php:${PHP_FPM_VERSION}-fpm-alpine
 
@@ -26,16 +26,17 @@ RUN apk --update add --no-cache \
   make \
   shadow \ 
   oniguruma-dev \
-  libwebp-dev 
+  libwebp-dev \
+  linux-headers
 
 # INSTALL_MCRYPT
-RUN if [ `echo "${PHP_FPM_VERSION} > 7.2"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'false';") = "true" ]; then \
         pecl install mcrypt && docker-php-ext-enable mcrypt; \
     else \
         docker-php-ext-install mcrypt; \
     fi
 # INSTALL_GD
-RUN if [ `echo "${PHP_FPM_VERSION} > 7.4"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.4', '>') ? 'true' : 'false';") = "true" ]; then \
         # "--with-xxx-dir" was removed from php 7.4,
         # issue: https://github.com/docker-library/php/issues/912
         options="--with-freetype --with-jpeg --with-webp"; \
@@ -43,7 +44,7 @@ RUN if [ `echo "${PHP_FPM_VERSION} > 7.4"|bc` -eq 1 ] ; then \
         options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
     fi 
 # INSTALL_XMLRPC
-RUN if [ `echo "${PHP_FPM_VERSION} > 8"|bc` -eq 1 ] ; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '8', '>') ? 'true' : 'false';") = "true" ]; then \
         pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc; \
     else \
         docker-php-ext-install xmlrpc; \
@@ -161,7 +162,7 @@ RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
 # 	  apk add --no-cache openldap-dev && \
 #     docker-php-ext-install ldap && \ 
 # INSTALL_IMAGICK
-    apk add --no-cache file-dev imagemagick-dev && \
+    apk add --no-cache file-dev imagemagick-dev imagemagick libjpeg-turbo libgomp freetype-dev && \
     printf "\n" | pecl install imagick && \
     docker-php-ext-enable imagick
 # INSTALL_COMPOSER
@@ -216,24 +217,24 @@ RUN apk add --no-cache libmemcached-dev zlib-dev && \
 # # COMPOSER_CODESNIFFER
 #     composer global require "squizlabs/php_codesniffer=*" 
 # INSTALL_YAR
-RUN pecl install msgpack &&\
-    docker-php-ext-enable msgpack &&\
-    pecl install yar && \
-    docker-php-ext-enable yar
+# RUN pecl install msgpack &&\
+#     docker-php-ext-enable msgpack &&\
+#     pecl install yar && \
+#     docker-php-ext-enable yar
 # INSTALL_MONGO    
-# RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
-#       pecl install mongo; \
-#       docker-php-ext-enable mongo; \
-#       php -m | grep -oiE '^mongo$'; \
-#     else \
-#       if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && { [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ] || [ $(php -r "echo PHP_MINOR_VERSION;") = "1" ] ;}; then \
-#         pecl install mongodb-1.9.2; \
-#       else \
-#         pecl install mongodb; \
-#       fi; \
-#       docker-php-ext-enable mongodb; \
-#       php -m | grep -oiE '^mongodb$'; \
-#     fi; 
+RUN if [ $(php -r "echo PHP_MAJOR_VERSION;") = "5" ]; then \
+      pecl install mongo; \
+      docker-php-ext-enable mongo; \
+      php -m | grep -oiE '^mongo$'; \
+    else \
+      if [ $(php -r "echo PHP_MAJOR_VERSION;") = "7" ] && { [ $(php -r "echo PHP_MINOR_VERSION;") = "0" ] || [ $(php -r "echo PHP_MINOR_VERSION;") = "1" ] ;}; then \
+        pecl install mongodb-1.9.2; \
+      else \
+        pecl install mongodb; \
+      fi; \
+      docker-php-ext-enable mongodb; \
+      php -m | grep -oiE '^mongodb$'; \
+    fi; 
 # INSTALL_RDKAFKA
 RUN apk add --no-cache --update librdkafka-dev  && \
     pecl install rdkafka && \
@@ -244,6 +245,6 @@ RUN php -v | head -n 1 | grep -q "PHP ${LARADOCK_PHP_VERSION}."
 
 
 # Clean up
-RUN apk del autoconf g++ make  .phpize-deps && rm -rf /tmp/* /var/cache/apk/*
+RUN apk del autoconf g++ make linux-headers .phpize-deps libwebp-dev oniguruma-dev && rm -rf /tmp/* /var/cache/apk/*
 
 RUN usermod -u 1000 www-data
