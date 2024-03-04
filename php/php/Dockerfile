@@ -44,7 +44,7 @@ RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'fal
         docker-php-ext-install mcrypt; \
     fi
 # INSTALL_GD
-RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.4', '>') ? 'true' : 'false';") = "true" ]; then \
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.3', '>') ? 'true' : 'false';") = "true" ]; then \
         # "--with-xxx-dir" was removed from php 7.4,
         # issue: https://github.com/docker-library/php/issues/912
         options="--with-freetype --with-jpeg --with-webp"; \
