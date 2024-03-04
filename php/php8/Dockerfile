@@ -35,14 +35,7 @@ RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'fal
     else \
         docker-php-ext-install mcrypt; \
     fi
-# INSTALL_GD
-RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.3', '>') ? 'true' : 'false';") = "true" ]; then \
-        # "--with-xxx-dir" was removed from php 7.4,
-        # issue: https://github.com/docker-library/php/issues/912
-        options="--with-freetype --with-jpeg --with-webp"; \
-    else \
-        options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
-    fi 
+
 # INSTALL_XMLRPC
 RUN if [ $(php -r "echo version_compare(PHP_VERSION, '8', '>') ? 'true' : 'false';") = "true" ]; then \
         pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc; \
@@ -50,7 +43,20 @@ RUN if [ $(php -r "echo version_compare(PHP_VERSION, '8', '>') ? 'true' : 'false
         docker-php-ext-install xmlrpc; \
     fi 
 
-RUN apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
+# INSTALL_EXCIMER
+RUN apk --update add --virtual .build-deps $PHPIZE_DEPS && \
+    pecl install excimer && \
+    docker-php-ext-enable excimer
+    
+# INSTALL_GD
+RUN if [ $(php -r "echo version_compare(PHP_VERSION, '7.2', '>') ? 'true' : 'false';") = "true" ]; then \
+        # "--with-xxx-dir" was removed from php 7.4,
+        # issue: https://github.com/docker-library/php/issues/912
+        options="--with-freetype --with-jpeg --with-webp"; \
+    else \
+        options="--with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-webp-dir=/usr/include/"; \
+    fi && \
+    apk add --no-cache freetype-dev libjpeg-turbo-dev libpng-dev && \
     docker-php-ext-configure gd ${options} && \
     docker-php-ext-install gd && \
 # INSTALL_INTL
