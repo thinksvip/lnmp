@@ -1,4 +1,4 @@
-ARG PHP_WORKER_VERSION=php-alpine
+ARG PHP_WORKER_VERSION=php-apm
 
 FROM thinksvip/lnmp:${PHP_WORKER_VERSION}
 
